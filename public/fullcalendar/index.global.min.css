@@ -1,0 +1,8 @@
+.fc { font-family: Arial, sans-serif; }
+.fc .fc-toolbar { display:flex; justify-content:space-between; margin-bottom:10px; }
+.fc table { width:100%; border-collapse:collapse; }
+.fc td, .fc th { border:1px solid #ddd; padding:4px; }
+.fc-timegrid-slot { height:40px; }
+.fc .fc-col-header-cell { background:#f8f9ff; font-weight:bold; text-align:center; }
+.fc .fc-timegrid-event { background:#4c6fff; color:#fff; border-radius:4px; padding:2px 4px; }
+.fc-scrollgrid { background:white; }

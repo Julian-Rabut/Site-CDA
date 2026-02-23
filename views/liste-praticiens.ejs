@@ -1,0 +1,40 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+  <meta charset="UTF-8">
+  <title>Choisir un praticien</title>
+  <link rel="stylesheet" href="/style.css">
+</head>
+<body>
+  <div class="page">
+    <div class="header">
+      <div>
+        <h1>Prendre rendez-vous</h1>
+        <small>Choisissez un professionnel.</small>
+      </div>
+    </div>
+
+    <div class="card">
+      <h2>Nos praticiens</h2>
+
+      <% if (praticiens.length === 0) { %>
+        <p class="text-muted">Aucun praticien enregistré pour le moment.</p>
+      <% } else { %>
+        <ul>
+          <% praticiens.forEach(p => { %>
+            <li>
+              <div style="display:flex; justify-content:space-between; align-items:center;">
+                <div>
+                  <strong><%= p.nom %></strong><br>
+                  <span class="text-muted"><%= p.email %></span>
+                </div>
+                <a href="/rdv/<%= p.id %>" class="btn">Voir les créneaux</a>
+              </div>
+            </li>
+          <% }) %>
+        </ul>
+      <% } %>
+    </div>
+  </div>
+</body>
+</html>

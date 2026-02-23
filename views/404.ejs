@@ -1,0 +1,23 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+  <%- include('partials/head', { title: '404 - Page introuvable', extraCss: [] }) %>
+</head>
+<body>
+  <%- include('partials/header') %>
+  <div class="page-simple">
+    <div class="header">
+      <div>
+        <h1>404 - Page introuvable</h1>
+        <small>La page demandée n'existe pas.</small>
+      </div>
+    </div>
+
+    <div class="card">
+      <p>Vérifie l'URL ou retourne à l'accueil.</p>
+      <a class="btn" href="/">Retour accueil</a>
+    </div>
+  </div>
+  <%- include('partials/footer') %>
+</body>
+</html>

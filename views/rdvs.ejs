@@ -1,0 +1,69 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+  <%- include('partials/head', { title: 'Rendez-vous', extraCss: [] }) %>
+</head>
+<body>
+  <%- include('partials/header') %>
+
+  <div class="page">
+    <div class="card">
+      <div class="flex-between">
+        <div>
+          <h1>Rendez-vous</h1>
+          <p class="text-muted">Liste complète + filtres.</p>
+        </div>
+      </div>
+
+      <form method="GET" action="/auth/rdvs" style="margin-top:12px; display:flex; gap:8px; flex-wrap:wrap;">
+        <input type="text" name="q" placeholder="Nom / email / tel / type" value="<%= q || '' %>">
+
+        <select name="statut">
+          <option value="" <%= !statut ? 'selected' : '' %>>Tous statuts</option>
+          <option value="confirme" <%= statut==='confirme' ? 'selected' : '' %>>Confirmé</option>
+          <option value="annule" <%= statut==='annule' ? 'selected' : '' %>>Annulé</option>
+          <option value="libre" <%= statut==='libre' ? 'selected' : '' %>>Libre</option>
+        </select>
+
+        <button class="btn" type="submit">Filtrer</button>
+      </form>
+
+      <table style="width:100%; margin-top:12px;">
+        <thead>
+          <tr>
+            <th>Date</th>
+            <th>Client</th>
+            <th>Type</th>
+            <th>Statut</th>
+          </tr>
+        </thead>
+        <tbody>
+          <% if (!items || items.length === 0) { %>
+            <p>Aucun élément.</p>
+          <% } else { %>
+            <% items.forEach(r => { %>
+              <tr>
+                <td><%= new Date(r.date_heure_debut).toLocaleString() %></td>
+                <td><%= new Date(r.date_heure_fin).toLocaleString() %></td>
+
+                <td>
+                  <% if (r.statut === 'libre') { %>
+                    —<br><span class="text-muted">—</span>
+                  <% } else { %>
+                    <strong><%= r.nom_client %></strong><br>
+                    <span class="text-muted"><%= r.email_client || '' %> <%= r.tel_client || '' %></span>
+                  <% } %>
+                </td>
+
+                <td><%= r.type_seance || '—' %></td>
+                <td><%= r.statut %></td>
+              </tr>
+            <% }) %>
+          <% } %>
+          
+        </tbody>
+      </table>
+    </div>
+  </div>
+</body>
+</html>

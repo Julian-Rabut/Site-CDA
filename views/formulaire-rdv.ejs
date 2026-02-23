@@ -1,0 +1,57 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+  <%- include('partials/head', { title: 'Confirmer le rendez-vous', extraCss: [] }) %>
+</head>
+<body>
+  <%- include('partials/header') %>
+  <div class="page-simple">
+    <div class="header">
+      <div>
+        <h1>Confirmer le rendez-vous</h1>
+        <small>Merci de renseigner vos informations.</small>
+      </div>
+    </div>
+
+    <div class="card">
+      <p>
+        Créneau choisi :
+        <br>
+        <strong><%= creneau.date_heure_debut.toLocaleString("fr-FR") %></strong>
+        →
+        <strong><%= displayFin.toLocaleString("fr-FR") %></strong>
+      </p>
+
+      <form action="/rdv/reserver" method="POST">
+        <input type="hidden" name="creneau_id" value="<%= creneau.id %>">
+          <% if (selectedTypeId) { %>
+            <input type="hidden" name="type_seance_id" value="<%= selectedTypeId %>">
+          <% } else { %>
+            <label>Type de séance</label>
+            <select name="type_seance_id" required>
+              <option value="">— Choisir un type —</option>
+              <% typesSeance.forEach(t => { %>
+                <option value="<%= t.id %>"><%= t.nom %></option>
+              <% }) %>
+            </select>
+          <% } %>
+
+        <label>Nom complet</label>
+        <input type="text" name="nom_client" required>
+
+        <label>Email</label>
+        <input type="email" name="email_client" required>
+
+        <label>Téléphone</label>
+        <input type="text" name="tel_client" required>
+
+        <label>Commentaire (optionnel)</label>
+        <textarea name="commentaire" rows="3" placeholder="Ex: informations utiles, douleurs, préférences..."></textarea>
+
+        <button class="btn" type="submit">Confirmer le rendez-vous</button>
+      </form>
+    </div>
+  </div>
+  <%- include('partials/footer') %>
+</body>
+</html>

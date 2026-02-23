@@ -1,0 +1,45 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+  <%- include('partials/head', { title: 'Connexion praticienne' }) %>
+</head>
+<body>
+  <div class="page-simple">
+    <div class="header">
+      <div>
+        <h1>Connexion praticienne</h1>
+        <small>Accès réservé à la professionnelle.</small>
+      </div>
+    </div>
+
+    <div class="card">
+      <% if (error) { %>
+        <div class="message-error"><%= error %></div>
+      <% } %>
+
+      <form action="/auth/login" method="POST">
+        <label>Email</label>
+        <input type="text" name="email" required>
+
+        <label>Mot de passe</label>
+        <input type="password" name="mot_de_passe" required>
+
+        <button type="submit">Se connecter</button>
+      </form>
+
+      <p class="text-muted">
+        Vous n'avez pas encore de compte praticien ?
+        <a href="/auth/register">Créer un compte</a>
+      </p>
+
+      <p class="text-muted">
+        Cette zone est réservée à la praticienne. Les clients peuvent réserver via la page de prise de rendez-vous.
+      </p>
+
+      <p class="text-muted">
+        Compte CDA prof : login <strong>admin@gmail.com</strong> / mdp <strong>admin</strong>
+      </p>
+    </div>
+  </div>
+</body>
+</html>

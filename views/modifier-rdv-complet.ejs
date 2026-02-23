@@ -1,0 +1,100 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Modifier RDV</title>
+  <link rel="stylesheet" href="/style.css" />
+</head>
+<body>
+  <%- include('partials/header', { user }) %>
+
+  <main class="page">
+    <div class="card" style="margin-top:16px;">
+      <h1>Modifier le rendez-vous</h1>
+
+      <% if (error) { %>
+        <div style="margin-top:10px; color:#c00;"><%= error %></div>
+      <% } %>
+
+      <form method="POST" action="/auth/rdv/<%= rdv.id %>/modifier">
+        <p class="text-muted" style="margin-top:6px;">
+          Coche ce que tu veux modifier, puis enregistre.
+        </p>
+
+        <div style="display:flex; flex-direction:column; gap:12px; margin-top:14px;">
+
+          <!-- Date/heure -->
+          <div style="display:flex; gap:10px; align-items:center; flex-wrap:wrap;">
+            <label style="display:flex; gap:8px; align-items:center;">
+              <input type="checkbox" name="edit_datetime" value="1">
+              <strong>Date/heure</strong>
+            </label>
+
+            <input type="date" name="date" value="<%= defaultDate %>">
+            <input type="time" name="time" value="<%= defaultTime %>">
+          </div>
+
+          <!-- Nom -->
+          <div style="display:flex; gap:10px; align-items:center; flex-wrap:wrap;">
+            <label style="display:flex; gap:8px; align-items:center;">
+              <input type="checkbox" name="edit_nom" value="1">
+              <strong>Nom</strong>
+            </label>
+            <input type="text" name="nom_client" value="<%= rdv.nom_client || '' %>" style="min-width:260px;">
+          </div>
+
+          <!-- Email -->
+          <div style="display:flex; gap:10px; align-items:center; flex-wrap:wrap;">
+            <label style="display:flex; gap:8px; align-items:center;">
+              <input type="checkbox" name="edit_email" value="1">
+              <strong>Email</strong>
+            </label>
+            <input type="email" name="email_client" value="<%= rdv.email_client || '' %>" style="min-width:260px;">
+          </div>
+
+          <!-- Tel -->
+          <div style="display:flex; gap:10px; align-items:center; flex-wrap:wrap;">
+            <label style="display:flex; gap:8px; align-items:center;">
+              <input type="checkbox" name="edit_tel" value="1">
+              <strong>Téléphone</strong>
+            </label>
+            <input type="text" name="tel_client" value="<%= rdv.tel_client || '' %>" style="min-width:200px;">
+          </div>
+
+          <!-- Type -->
+          <div style="display:flex; gap:10px; align-items:center; flex-wrap:wrap;">
+            <label style="display:flex; gap:8px; align-items:center;">
+              <input type="checkbox" name="edit_type" value="1">
+              <strong>Type</strong>
+            </label>
+
+            <select name="type_seance_id">
+              <option value="">—</option>
+              <% typesSeance.forEach(t => { %>
+                <option value="<%= t.id %>" <%= String(rdv.type_seance_id||'') === String(t.id) ? 'selected' : '' %>>
+                  <%= t.nom %>
+                </option>
+              <% }) %>
+            </select>
+          </div>
+
+          <!-- Commentaire -->
+          <div style="display:flex; gap:10px; align-items:flex-start; flex-wrap:wrap;">
+            <label style="display:flex; gap:8px; align-items:center; margin-top:6px;">
+              <input type="checkbox" name="edit_commentaire" value="1">
+              <strong>Commentaire</strong>
+            </label>
+            <textarea name="commentaire" rows="3" style="min-width:320px;"><%= rdv.commentaire || '' %></textarea>
+          </div>
+        </div>
+
+        <div style="margin-top:16px; display:flex; gap:10px;">
+          <button class="btn" type="submit">Enregistrer</button>
+          <a class="btn btn-outline" href="/auth/calendar">Retour</a>
+        </div>
+      </form>
+    </div>
+  </main>
+</body>
+</html>

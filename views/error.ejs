@@ -1,0 +1,23 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+  <%- include('partials/head', { title: 'Page d\'erreur (exemple)', extraCss: [] }) %>
+</head>
+<body>
+  <%- include('partials/header') %>
+  <div class="page-simple">
+    <div class="header">
+      <div>
+        <h1>Page d'erreur (exemple)</h1>
+        <small>Cette page existe pour valider la consigne "lien visible vers une page d'erreur".</small>
+      </div>
+    </div>
+
+    <div class="card">
+      <p>Tout va bien 🙂 — ici, on simule une page d'erreur.</p>
+      <p class="text-muted">Test aussi la vraie page 404 en allant sur une URL inexistante.</p>
+    </div>
+  </div>
+  <%- include('partials/footer') %>
+</body>
+</html>

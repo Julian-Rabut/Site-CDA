@@ -1,0 +1,52 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+  <%- include('partials/head', { title: 'Clients', extraCss: [] }) %>
+</head>
+<body>
+  <%- include('partials/header') %>
+
+  <div class="page">
+    <div class="card">
+      <div class="flex-between">
+        <div>
+          <h1>Clients</h1>
+          <p class="text-muted">Liste de vos clients + filtre.</p>
+        </div>
+      </div>
+
+      <form method="GET" action="/auth/clients" style="margin-top:12px;">
+        <input type="text" name="q" placeholder="Rechercher (nom, email, tel)" value="<%= q || '' %>">
+        <button class="btn" type="submit">Filtrer</button>
+      </form>
+
+      <table style="width:100%; margin-top:12px;">
+        <thead>
+          <tr>
+            <th>Nom</th>
+            <th>Email</th>
+            <th>Téléphone</th>
+            <th>Nb RDV</th>
+            <th>Dernier RDV</th>
+          </tr>
+        </thead>
+        <tbody>
+          <% if (clients && clients.length) { %>
+            <% clients.forEach(c => { %>
+              <tr>
+                <td><%= c.nom_client %></td>
+                <td><%= c.email_client || '—' %></td>
+                <td><%= c.tel_client || '—' %></td>
+                <td><%= c.nombre_rdv %></td>
+                <td><%= c.dernier_rdv ? new Date(c.dernier_rdv).toLocaleString("fr-FR") : '—' %></td>
+              </tr>
+            <% }) %>
+          <% } else { %>
+            <tr><td colspan="5">Aucun client.</td></tr>
+          <% } %>
+        </tbody>
+      </table>
+    </div>
+  </div>
+</body>
+</html>

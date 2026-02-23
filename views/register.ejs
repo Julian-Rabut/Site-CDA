@@ -1,0 +1,46 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+  <%- include('partials/head', { title: 'Créer un compte praticien' }) %>
+</head>
+<body>
+  <div class="page-simple">
+    <div class="header">
+      <div>
+        <h1>Créer un compte praticien</h1>
+        <small>Espace réservé aux professionnels.</small>
+      </div>
+    </div>
+
+    <div class="card">
+      <% if (error) { %>
+        <div class="message-error"><%= error %></div>
+      <% } %>
+
+      <form action="/auth/register" method="POST">
+        <label>Nom complet</label>
+        <input type="text" name="nom" required>
+
+        <label>Email professionnel</label>
+        <input type="email" name="email" required>
+
+        <label>Téléphone</label>
+        <input type="text" name="telephone">
+
+        <label>Mot de passe</label>
+        <input type="password" name="mot_de_passe" required>
+
+        <label>Confirmation du mot de passe</label>
+        <input type="password" name="mot_de_p_p2" required>
+
+        <button type="submit">Créer mon compte</button>
+      </form>
+
+      <p class="text-muted">
+        Vous avez déjà un compte ?
+        <a href="/auth/login">Se connecter</a>
+      </p>
+    </div>
+  </div>
+</body>
+</html>

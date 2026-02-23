@@ -1,0 +1,94 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Ma fiche pro</title>
+  <link rel="stylesheet" href="/style.css" />
+</head>
+<body>
+  <%- include('partials/header', { user }) %>
+
+  <main class="page">
+    <div class="card" style="margin-top:16px;">
+      <h1>Ma fiche professionnelle</h1>
+      <p class="text-muted">Ces informations s’affichent côté client sur la page de prise de rendez-vous.</p>
+
+      <form method="POST" action="/auth/profil">
+        <div class="form-grid">
+          <div class="form-group">
+            <label>Titre </label>
+            <input type="text" name="titre" value="<%= profile.titre || '' %>" maxlength="120">
+          </div>
+
+          <div class="form-group">
+            <label>Téléphone</label>
+            <input type="text" name="telephone" value="<%= profile.telephone || '' %>" maxlength="50">
+          </div>
+
+          <div class="form-group">
+            <label>Email (public)</label>
+            <input type="email" name="email_public" value="<%= profile.email_public || '' %>" maxlength="150">
+          </div>
+
+          <div class="form-group">
+            <label>Adresse</label>
+            <input type="text" name="adresse" value="<%= profile.adresse || '' %>" maxlength="255">
+          </div>
+
+          <div class="form-group">
+            <label>Ville</label>
+            <input type="text" name="ville" value="<%= profile.ville || '' %>" maxlength="120">
+          </div>
+
+          <div class="form-group">
+            <label>Lien itinéraire (Google Maps)</label>
+            <input type="text" name="itineraire_url" value="<%= profile.itineraire_url || '' %>" maxlength="500">
+          </div>
+
+          <div class="form-group" style="grid-column: 1 / -1;">
+            <label>Photo </label>
+            <input type="text" name="photo_url" value="<%= profile.photo_url || '' %>" maxlength="500">
+            <small class="text-muted">Astuce : utilise une URL directe d’image (qui finit par .png) si possible.</small>
+          </div>
+
+          <div class="form-group" style="grid-column: 1 / -1;">
+            <label>Tarifs </label>
+            <textarea name="tarifs" rows="4" placeholder="Ex: Réflexologie 60min : 55€&#10;Forfait 3 séances : 150€"><%= profile.tarifs || '' %></textarea>
+          </div>
+
+          <div class="form-group" style="grid-column: 1 / -1;">
+            <label>Horaires </label>
+            <textarea name="horaires" rows="4" placeholder="Ex:&#10;Lundi : 9h-18h&#10;Mardi : 9h-12h / 14h-18h&#10;Mercredi : fermé"><%= profile.horaires || '' %></textarea>
+          </div>
+
+          <div class="form-group" style="grid-column: 1 / -1;">
+            <label>Description </label>
+            <textarea name="description" rows="4"><%= profile.description || '' %></textarea>
+          </div>
+
+          <div class="form-group" style="grid-column: 1 / -1;">
+            <label>Paiement </label>
+            <input type="text" name="paiement" value="<%= profile.paiement || '' %>" maxlength="255">
+          </div>
+          
+          <div class="form-group" style="grid-column: 1 / -1;"></div>
+            <label>Description des séances</label>
+            <textarea name="description_seances" rows="4" placeholder="Décrivez vos séances (durée, objectifs, déroulement...)"><%= profile.description_seances || "" %></textarea>
+          </div>
+
+          <div class="form-group" style="grid-column: 1 / -1;">
+            <label>Règles / infos utiles </label>
+            <textarea name="regles" rows="4"><%= profile.regles || '' %></textarea>
+          </div>
+        </div>
+
+        <div style="margin-top:14px; display:flex; gap:10px;">
+          <button class="btn" type="submit">Enregistrer</button>
+          <a class="btn btn-outline" href="/auth/calendar">Retour</a>
+        </div>
+      </form>
+    </div>
+  </main>
+</body>
+</html>

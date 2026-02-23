@@ -1,0 +1,400 @@
+/* Reset léger */
+* {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+}
+
+/* Fond général */
+body {
+  font-family: system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+  background: linear-gradient(135deg, #f6f0ff, #f0fbff);
+  color: #233044;
+  min-height: 100vh;
+  padding: 20px;
+}
+
+/* Header / Footer (partials) */
+.site-header {
+  background: #ffffffcc;
+  border-radius: 12px;
+  box-shadow: 0 4px 16px rgba(0,0,0,0.05);
+  padding: 12px 16px;
+  margin-bottom: 18px;
+  backdrop-filter: blur(6px);
+}
+
+.site-header__inner {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 14px;
+  flex-wrap: wrap;
+}
+
+.site-brand {
+  font-weight: 700;
+  color: #233044;
+}
+
+.site-nav {
+  display: flex;
+  gap: 12px;
+  flex-wrap: wrap;
+}
+
+.site-user {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  flex-wrap: wrap;
+}
+
+.site-footer {
+  margin-top: 24px;
+  padding: 12px 16px;
+  border-radius: 12px;
+  background: #ffffffcc;
+  box-shadow: 0 4px 16px rgba(0,0,0,0.05);
+}
+
+/* Liens */
+a {
+  color: #4c6fff;
+  text-decoration: none;
+}
+a:hover {
+  text-decoration: underline;
+}
+
+/* Layout principal */
+.page {
+  max-width: 1000px;
+  margin: 0 auto;
+}
+
+/* En-tête */
+.header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  background: #ffffffcc;
+  padding: 16px 20px;
+  border-radius: 12px;
+  box-shadow: 0 4px 16px rgba(0,0,0,0.05);
+  margin-bottom: 24px;
+  backdrop-filter: blur(6px);
+}
+
+.header h1 {
+  font-size: 1.4rem;
+  font-weight: 600;
+}
+
+.header small {
+  color: #66748b;
+}
+
+/* Boutons */
+button,
+.btn {
+  display: inline-block;
+  background: #4c6fff;
+  border: none;
+  padding: 8px 14px;
+  color: white;
+  border-radius: 999px;
+  cursor: pointer;
+  font-size: 0.9rem;
+  font-weight: 500;
+  transition: transform 0.1s ease, box-shadow 0.1s ease, background 0.1s ease;
+}
+
+button:hover,
+.btn:hover {
+  background: #3b57cc;
+  box-shadow: 0 2px 8px rgba(76,111,255,0.4);
+  transform: translateY(-1px);
+}
+
+.btn-secondary {
+  background: #ffffff;
+  color: #4c6fff;
+  border: 1px solid #d7def0;
+}
+.btn-secondary:hover {
+  background: #f3f5ff;
+}
+
+/* Conteneur principal */
+.container {
+  display: grid;
+  grid-template-columns: minmax(0, 1.2fr) minmax(0, 1fr);
+  gap: 20px;
+}
+
+@media (max-width: 800px) {
+  .container {
+    grid-template-columns: 1fr;
+  }
+}
+
+/* Cartes */
+.card {
+  background: #ffffff;
+  border-radius: 16px;
+  padding: 18px 20px;
+  box-shadow: 0 4px 16px rgba(0,0,0,0.05);
+  margin-bottom: 20px;
+}
+
+.card h2 {
+  font-size: 1.1rem;
+  margin-bottom: 12px;
+}
+
+/* Liste */
+ul {
+  list-style: none;
+  margin-top: 10px;
+}
+
+li {
+  padding: 10px 12px;
+  border-radius: 10px;
+  border: 1px solid #e2e6f2;
+  background: #fafbff;
+  margin-bottom: 8px;
+  font-size: 0.9rem;
+}
+
+/* Badges */
+.badge {
+  display: inline-block;
+  padding: 2px 8px;
+  border-radius: 999px;
+  font-size: 0.75rem;
+  font-weight: 500;
+}
+
+.badge-libre {
+  background: #e6fbf0;
+  color: #1f8a4d;
+}
+.badge-reserve {
+  background: #fff2e6;
+  color: #c2711f;
+}
+.badge-bloque {
+  background: #ffe6ea;
+  color: #c21f4f;
+}
+.badge-annule {
+  background: #f0f1f5;
+  color: #7b8395;
+}
+
+/*  Calendrier */
+.page-wide {
+  max-width: 1400px;
+  margin: 0 auto;
+}
+
+.flex-between {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 14px;
+  flex-wrap: wrap;
+}
+
+.actions {
+  display: flex;
+  gap: 10px;
+  flex-wrap: wrap;
+}
+
+/* Légende en ligne */
+.legend-inline {
+  display: flex;
+  gap: 14px;
+  flex-wrap: wrap;
+  align-items: center;
+}
+
+.legend-item {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  font-size: 0.9rem;
+}
+
+.dot {
+  width: 10px;
+  height: 10px;
+  border-radius: 999px;
+  display: inline-block;
+}
+.dot-free { background: #1f8a4d; }
+.dot-blocked { background: #c21f4f; }
+.dot-rdv { background: #4c6fff; }
+.dot-cancel { background: #7b8395; }
+
+/* Modales (très important)= */
+.hidden { display: none !important; }
+
+.modal-backdrop {
+  position: fixed;
+  inset: 0;
+  background: rgba(0,0,0,0.45);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 18px;
+  z-index: 9999;
+}
+
+.modal-panel {
+  width: min(760px, 100%);
+  background: #fff;
+  border-radius: 16px;
+  padding: 18px 20px;
+  box-shadow: 0 10px 30px rgba(0,0,0,0.25);
+}
+
+.modal-header h2 {
+  margin: 0;
+  font-size: 1.2rem;
+}
+
+.modal-body {
+  margin-top: 10px;
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+.modal-footer {
+  margin-top: 14px;
+  display: flex;
+  justify-content: flex-end;
+  gap: 10px;
+  flex-wrap: wrap;
+}
+
+.divider {
+  border-top: 1px solid #e2e6f2;
+  margin: 14px 0;
+}
+
+.form-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 10px;
+}
+
+@media (max-width: 640px) {
+  .form-grid { grid-template-columns: 1fr; }
+}
+
+.radio-row {
+  display: flex;
+  gap: 12px;
+  flex-wrap: wrap;
+  margin-top: 6px;
+}
+
+.btn-outline {
+  background: #ffffff;
+  color: #4c6fff;
+  border: 1px solid #d7def0;
+}
+.btn-outline:hover {
+  background: #f3f5ff;
+  color: #3b57cc;
+}
+.btn-danger {
+  background: #d32f2f;
+}
+.btn-danger:hover {
+  background: #b71c1c;
+}
+
+
+/* Formulaires */
+form {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  margin-top: 8px;
+}
+
+label {
+  font-size: 0.85rem;
+  color: #4c5a71;
+}
+
+input[type="text"],
+input[type="email"],
+input[type="password"],
+input[type="datetime-local"] {
+  padding: 8px 10px;
+  border-radius: 10px;
+  border: 1px solid #d7def0;
+  font-size: 0.9rem;
+  outline: none;
+  transition: border 0.1s ease, box-shadow 0.1s ease, background 0.1s ease;
+}
+
+input:focus {
+  border-color: #4c6fff;
+  box-shadow: 0 0 0 2px rgba(76,111,255,0.15);
+  background: #f8f9ff;
+}
+
+/* Messages */
+.message-error {
+  color: #c62828;
+  background: #ffecec;
+  border: 1px solid #ffcdd2;
+  padding: 8px 10px;
+  border-radius: 8px;
+  margin-bottom: 12px;
+  font-size: 0.85rem;
+}
+
+.message-success {
+  color: #1b5e20;
+  background: #e8f5e9;
+  border: 1px solid #c8e6c9;
+  padding: 8px 10px;
+  border-radius: 8px;
+  margin-bottom: 12px;
+  font-size: 0.85rem;
+}
+
+/* Pages simples (login, client) */
+.page-simple {
+  max-width: 450px;
+  margin: 40px auto;
+}
+
+.text-muted {
+  font-size: 0.8rem;
+  color: #7b8395;
+  margin-top: 4px;
+}
+
+
+#calendar {
+  font-size: 0.85rem;
+}
+
+.type-color-dot {
+  display: inline-block;
+  width: 10px;
+  height: 10px;
+  border-radius: 3px;
+  margin-right: 4px;
+}
+

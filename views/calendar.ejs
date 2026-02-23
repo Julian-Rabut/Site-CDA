@@ -1,0 +1,203 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Calendrier</title>
+
+  <link rel="stylesheet" href="/style.css" />
+  <link rel="stylesheet" href="/fullcalendar/index.global.min.css">
+
+  <style>
+    /* Le calendrier doit être grand, sans sidebar */
+    #calendar-container { height: calc(100vh - 240px); min-height: 620px; }
+    #calendar { height: 100%; }
+  </style>
+</head>
+
+<body class="calendar-page">
+  <%- include('partials/header', { user }) %>
+
+  <main class="page-wide">
+    <div class="card" style="margin-top: 16px;">
+      <div class="flex-between">
+        <div>
+          <h1>Calendrier</h1>
+          <p class="text-muted">Vue hebdomadaire de tes créneaux et rendez-vous.</p>
+        </div>
+
+        <div class="actions">
+          <button id="btn-generate-day" class="btn btn-outline" type="button">Générer des créneaux</button>
+          <button id="btn-dupliquer-journee" class="btn btn-outline" type="button">Dupliquer journée</button>
+          <button id="btn-block-day" class="btn btn-outline" type="button">Bloquer une journée</button>
+        </div>
+      </div>
+
+      <div class="legend-inline" style="margin-top: 12px;">
+        <span class="legend-item"><span class="dot dot-free"></span> Créneau libre</span>
+        <span class="legend-item"><span class="dot dot-blocked"></span> Créneau bloqué</span>
+        <span class="legend-item"><span class="dot dot-rdv"></span> RDV</span>
+        <span class="legend-item"><span class="dot dot-cancel"></span> RDV annulé</span>
+      </div>
+    </div>
+
+    <div class="card" style="margin-top: 16px;">
+      <div id="calendar-container">
+        <div id="calendar"></div>
+      </div>
+    </div>
+  </main>
+
+  <!-- MODALES (NE DOIVENT PAS ÊTRE VISIBLES AU CHARGEMENT) -->
+  <div id="modal-rdv" class="hidden">
+    <div class="modal-backdrop">
+      <div class="modal-panel">
+        <div class="modal-header">
+          <h2>Détails du rendez-vous</h2>
+        </div>
+        <div class="modal-body">
+          <div><strong>Client :</strong> <span id="modal-rdv-client"></span></div>
+          <div><strong>Email :</strong> <span id="modal-rdv-email"></span></div>
+          <div><strong>Téléphone :</strong> <span id="modal-rdv-tel"></span></div>
+          <div><strong>Type :</strong> <span id="modal-rdv-type"></span></div>
+          <div><strong>Début :</strong> <span id="modal-rdv-start"></span></div>
+          <div><strong>Fin :</strong> <span id="modal-rdv-end"></span></div>
+          <div><strong>Commentaire :</strong> <span id="modal-rdv-commentaire"></span></div>
+        </div>
+
+        <div id="rdv-edit-zone" style="display:none; margin-top:12px; padding-top:10px; border-top:1px solid #eee;">
+          <h3 style="margin:0 0 10px 0;">Modifier date/heure</h3>
+
+          <div style="display:flex; gap:12px; flex-wrap:wrap;">
+            <div style="display:flex; flex-direction:column; gap:6px;">
+              <label for="rdv-edit-date"><strong>Date</strong></label>
+              <input id="rdv-edit-date" type="date">
+            </div>
+
+            <div style="display:flex; flex-direction:column; gap:6px;">
+              <label for="rdv-edit-time"><strong>Heure</strong></label>
+              <input id="rdv-edit-time" type="time">
+            </div>
+          </div>
+
+          <div style="margin-top:12px; display:flex; gap:10px;">
+            <button id="btn-save-rdv-datetime" class="btn">Enregistrer</button>
+            <button id="btn-cancel-rdv-datetime" class="btn btn-outline" type="button">Annuler</button>
+          </div>
+
+          <div id="rdv-edit-error" style="margin-top:10px; color:#c00;"></div>
+        </div>
+
+
+        <div class="modal-footer">
+          <button id="modal-rdv-annuler" class="btn btn-danger" type="button">Annuler RDV</button>
+          <button id="modal-rdv-modifier" class="btn btn-outline" type="button">Modifier RDV</button>
+          <button id="modal-rdv-fermer" class="btn" type="button">Fermer</button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div id="modal-creneau" class="hidden">
+    <div class="modal-backdrop">
+      <div class="modal-panel">
+        <div class="modal-header">
+          <h2 id="modal-creneau-title">Créneau</h2>
+          <p id="modal-creneau-subtitle" class="text-muted" style="margin: 0;"></p>
+          <button type="button" id="modal-creneau-liberer" class="hidden">Libérer</button>
+        </div>
+
+        <form id="form-creneau">
+          <input id="creneau-mode" type="hidden" value="">
+          <input id="creneau-id" type="hidden" value="">
+          <input id="creneau-date-iso" type="hidden" value="">
+
+          <div class="modal-body">
+            <div class="form-grid">
+              <div class="form-group">
+                <label>Date</label>
+                <input id="creneau-date-affiche" type="text" readonly>
+              </div>
+
+              <div class="form-group">
+                <label>Heure début</label>
+                <input id="creneau-heure-debut" type="time" value="08:00">
+              </div>
+
+              <div class="form-group">
+                <label>Durée (minutes)</label>
+                <input id="creneau-duree" type="number" min="5" step="5" value="60">
+              </div>
+            </div>
+
+            <div id="creneau-choix-action" style="margin-top: 12px;">
+              <div class="form-group">
+                <label>Action</label>
+                <div class="radio-row">
+                  <label class="radio-item">
+                    <input type="radio" name="creneau-action" value="creer_creneau" checked>
+                    <span id="label-action-creer-creneau">Créer un créneau libre</span>
+                  </label>
+                  <label class="radio-item">
+                    <input type="radio" name="creneau-action" value="creer_rdv">
+                    <span id="label-action-creer-rdv">Créer un rendez-vous</span>
+                  </label>
+                </div>
+              </div>
+            </div>
+            <div class="form-row">
+              <label>Client existant</label>
+              <select id="clientSelectCalendar">
+                <option value="">— Nouveau client —</option>
+              </select>
+            </div>
+
+            <div id="creneau-rdv-fields" class="hidden" style="margin-top: 12px;">
+              <div class="form-grid">
+                <div class="form-group">
+                  <label>Nom</label>
+                  <input id="creneau-nom" type="text" placeholder="Nom du client">
+                </div>
+
+                <div class="form-group">
+                  <label>Email</label>
+                  <input id="creneau-email" type="email" placeholder="email@exemple.com">
+                </div>
+
+                <div class="form-group">
+                  <label>Téléphone</label>
+                  <input id="creneau-tel" type="text" placeholder="06...">
+                </div>
+
+                <div class="form-group">
+                  <label>Type de séance</label>
+                  <select id="creneau-type-id">
+                    <option value="">— choisir un type —</option>
+                  </select>
+                </div>
+
+                <div class="form-group">
+                  <label>Couleur (optionnel)</label>
+                  <input id="creneau-type-couleur" type="color" value="#2d6cdf">
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <div class="modal-footer">
+            <button id="modal-creneau-supprimer" class="btn btn-danger hidden" type="button">
+              Supprimer ce créneau
+            </button>
+            <button id="modal-creneau-fermer" class="btn" type="button">Fermer</button>
+            <button id="modal-creneau-valider" class="btn btn-primary" type="submit">Valider</button>
+          </div>
+        </form>
+      </div>
+    </div>
+  </div>
+
+  
+  <script src="/fullcalendar/index.global.min.js"></script>
+  <script src="/js/calendar-init.js"></script>
+</body>
+</html>

@@ -1,0 +1,256 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+  <%- include('partials/head', { title: 'Dashboard', extraCss: [] }) %>
+</head>
+<body>
+    <style>
+  .dashboard-grid {
+    display:grid;
+    grid-template-columns:repeat(auto-fit,minmax(320px,1fr));
+    gap:20px;
+  }
+  </style>
+  <%- include('partials/header') %>
+  <div class="page">
+
+    <div class="header">
+      <div>
+        <h1>Bonjour, <%= user.nom %></h1>
+        <small>Gestion de vos créneaux et rendez-vous.</small>
+      </div>
+    </div>
+
+    <div class="page">
+
+      <% if (error) { %>
+        <div class="message-error"><%= error %></div>
+      <% } %>
+
+      <% if (success) { %>
+        <div class="message-success"><%= success %></div>
+      <% } %>
+
+      <div class="container">
+        <div>
+          <div class="card">
+            <h2>Ajouter un créneau</h2>
+            <form method="POST" action="/auth/creneaux">
+              <input type="datetime-local" name="date_heure_debut" required>
+              <input type="datetime-local" name="date_heure_fin" required>
+              <button type="submit">Ajouter</button>
+            </form>
+          </div>
+
+
+            <div class="card">
+    <h2>Types de séances</h2>
+
+    <form action="/auth/types-seance" method="POST">
+      <label>Nom</label>
+      <input type="text" name="nom" placeholder="Réflexologie plantaire" required>
+
+      <label>Durée (minutes)</label>
+      <input type="number" name="duree_minutes" min="1" required>
+
+      <label>Couleur (optionnel)</label>
+      <input type="color" name="couleur" value="#4c6fff">
+
+      <label>Description (optionnel)</label>
+      <input type="text" name="description" placeholder="Détente, travail sur les zones réflexes…">
+
+      <button type="submit">Ajouter ce type</button>
+    </form>
+
+    <% if (typesSeance && typesSeance.length > 0) { %>
+      <ul style="margin-top:10px;">
+        <% typesSeance.forEach(t => { %>
+          <li>
+            <strong><%= t.nom %></strong> (<%= t.duree_minutes %> min)
+            <% if (t.description) { %>
+              <br><span class="text-muted"><%= t.description %></span>
+            <% } %>
+          </li>
+        <% }) %>
+      </ul>
+    <% } else { %>
+      <p class="text-muted" style="margin-top:8px;">Aucun type de séance défini pour l’instant.</p>
+    <% } %>
+  </div>
+
+  <div class="card">
+  <h2>Ajouter un RDV (manuel)</h2>
+
+  <% if (creneauxLibres && creneauxLibres.length > 0) { %>
+    <form action="/auth/rdv-manuel" method="POST">
+      <label>Créneau</label>
+      <select name="creneau_id" required>
+        <option value="">Choisir un créneau...</option>
+        <% creneauxLibres.forEach(c => { %>
+          <option value="<%= c.id %>">
+            <%= new Date(c.date_heure_debut).toLocaleString("fr-FR") %> → <%= new Date(c.date_heure_fin).toLocaleString("fr-FR") %>
+          </option>
+        <% }) %>
+      </select>
+
+      <label>Client existant</label>
+        <select id="clientSelectManual">
+          <option value="">— Nouveau client —</option>
+          <% (clientsAll || []).forEach(cl => { %>
+            <option
+              value="<%= cl.email_client || cl.tel_client || cl.nom_client %>"
+              data-nom="<%= cl.nom_client || '' %>"
+              data-email="<%= cl.email_client || '' %>"
+              data-tel="<%= cl.tel_client || '' %>"
+            >
+              <%= cl.nom_client %> (<%= cl.email_client || 'sans email' %>)
+            </option>
+          <% }) %>
+        </select>
+
+      <label>Nom du client</label>
+      <input id="nomClientManual" type="text" name="nom_client" required>
+
+      <label>Email du client</label>
+      <input id="emailClientManual" type="email" name="email_client">
+
+      <label>Téléphone du client</label>
+      <input id="telClientManual" type="text" name="tel_client">
+
+      <label>Type de séance</label>
+      <% if (typesSeance && typesSeance.length > 0) { %>
+        <select name="type_seance_id">
+          <option value="">Choisir un type...</option>
+          <% typesSeance.forEach(t => { %>
+            <option value="<%= t.id %>"><%= t.nom %></option>
+          <% }) %>
+        </select>
+        <p class="text-muted">Ou précisez manuellement :</p>
+      <% } %>
+      <input type="text" name="type_seance_libre" placeholder="Réflexologie, massage…">
+
+      <button type="submit">Créer le rendez-vous</button>
+    </form>
+  <% } else { %>
+    <p class="text-muted">Vous devez d'abord créer des créneaux.</p>
+  <% } %>
+</div>
+
+          <div class="dashboard-grid"></div>
+          <div class="card">
+            <h2>Clients par mois</h2>
+            <canvas id="chartClientsParMois" height="120"></canvas>
+          </div>
+
+          <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+          <script>
+  (async function(){
+    const canvas = document.getElementById("chartClientsParMois");
+    if(!canvas) return;
+
+    const res = await fetch("/auth/api/stats/clients-par-mois");
+    const data = await res.json();
+    if(!data.success) return;
+
+    new Chart(canvas.getContext("2d"), {
+      type: "bar",
+      data: {
+        labels: data.labels,
+        datasets: [{ label: "Clients", data: data.values }]
+      },
+      options: { responsive: true }
+    });
+  })();
+</script>
+        </div>
+
+        <div>
+  <div class="card">
+    <h2>Mes rendez-vous</h2>
+    <a class="btn btn-outline" href="/auth/rdvs">Voir tous les RDV</a>
+    <% if (rdvs && rdvs.length > 0) { %>
+  <ul>
+    <% rdvs.forEach(r => { %>
+      <li>
+        <strong><%= r.nom_client || "Client" %></strong>
+        <% if (r.type_seance) { %> — <span class="text-muted"><%= r.type_seance %></span> <% } %>
+        <br>
+        <span class="text-muted">Statut : <%= r.statut %></span>
+      </li>
+    <% }) %>
+  </ul>
+<% } else { %>
+  <p class="text-muted">Aucun rendez-vous.</p>
+<% } %>
+  </div>
+  
+  <div class="dashboard-grid"></div>
+  <div class="card">
+    <h2>Mes clients</h2>
+    <a class="btn btn-outline" href="/auth/clients">Voir tous les clients</a>
+
+    <% if (clients && clients.length > 0) { %>
+      <ul>
+        <% clients.forEach(c => { %>
+          <li>
+            <strong><%= c.nom_client %></strong><br>
+            <% if (c.email_client) { %>
+              <span class="text-muted"><%= c.email_client %></span><br>
+            <% } %>
+            <% if (c.tel_client) { %>
+              <span class="text-muted"><%= c.tel_client %></span><br>
+            <% } %>
+            <span class="text-muted">
+              <%= c.nombre_rdv %> rendez-vous
+              <% if (c.dernier_rdv) { %>
+                — dernier : <%= new Date(c.dernier_rdv).toLocaleString("fr-FR") %>
+              <% } %>
+            </span>
+          </li>
+        <% }) %>
+      </ul>
+    <% } else { %>
+      <p class="text-muted">Aucun client pour l’instant.</p>
+    <% } %>
+  </div>
+
+
+  </div>
+</div>
+        <script>
+  (function () {
+    console.log("[RDV MANUEL] script chargé");
+
+    const select = document.getElementById("clientSelectManual");
+    console.log("[RDV MANUEL] select =", select);
+
+    const nom = document.getElementById("nomClientManual");
+    const email = document.getElementById("emailClientManual");
+    const tel = document.getElementById("telClientManual");
+    console.log("[RDV MANUEL] inputs =", { nom, email, tel });
+
+    if (!select) return;
+
+    select.addEventListener("change", () => {
+      const opt = select.options[select.selectedIndex];
+      console.log("[RDV MANUEL] change opt =", opt && opt.value, opt && opt.dataset);
+
+      if (!opt || !opt.value) {
+        if (nom) nom.value = "";
+        if (email) email.value = "";
+        if (tel) tel.value = "";
+        return;
+      }
+
+      if (nom) nom.value = opt.dataset.nom || "";
+      if (email) email.value = opt.dataset.email || "";
+      if (tel) tel.value = opt.dataset.tel || "";
+    });
+  })();
+</script>
+      </div>
+    </div>
+  </div>
+  <%- include('partials/footer') %>
+</body>
+</html>
