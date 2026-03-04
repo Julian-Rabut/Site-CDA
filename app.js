@@ -812,6 +812,46 @@ app.post("/auth/types-seance", requireLogin, async (req, res) => {
   }
 });
 
+app.post("/auth/types-seance/:id/delete", requireLogin, async (req, res) => {
+  try {
+    const userId = req.session.user.id;
+    const typeId = Number(req.params.id);
+
+    if (!typeId) {
+      return res.redirect("/auth/dashboard?error=" + encodeURIComponent("Type invalide."));
+    }
+
+    // 1) Bloquer si un RDV futur utilise ce type
+    const [used] = await pool.query(
+      `
+      SELECT COUNT(*) AS total
+      FROM rdv
+      JOIN creneaux c ON c.id = rdv.creneau_id
+      WHERE rdv.user_id = ?
+        AND rdv.type_seance_id = ?
+        AND c.date_heure_debut > NOW()
+        AND (rdv.statut IS NULL OR rdv.statut != 'annule')
+      `,
+      [userId, typeId]
+    );
+
+    if (used[0].total > 0) {
+      return res.redirect("/auth/dashboard?error=" + encodeURIComponent("Impossible de supprimer : type utilisé dans des RDV futurs."));
+    }
+
+    // 2) Supprimer le type (uniquement celui du user)
+    await pool.query(
+      "DELETE FROM types_seance WHERE id = ? AND user_id = ?",
+      [typeId, userId]
+    );
+
+    return res.redirect("/auth/dashboard?success=" + encodeURIComponent("Type de séance supprimé."));
+  } catch (err) {
+    console.error(err);
+    return res.redirect("/auth/dashboard?error=" + encodeURIComponent("Erreur serveur."));
+  }
+});
+
 app.post("/auth/rdv-manuel", requireLogin, async (req, res) => {
   try {
     const userId = req.session.user.id;
@@ -2017,9 +2057,7 @@ app.post("/auth/api/rdv/:id/annuler", requireLogin, async (req, res) => {
 
     const rdv = rows[0];
 
-    // Durée à restaurer :
-    // - priorité : durée du type
-    // - fallback : durée actuelle du créneau réservé (fin - début)
+    // Durée à restaurer 
     const startDate = parseMysqlDateTimeToDate(rdv.c_start);
     const endDateCurrent = parseMysqlDateTimeToDate(rdv.c_end);
 
@@ -2794,6 +2832,4 @@ app.use((req, res) => {
 });
 
 // ===================== SERVER =====================
-app.listen(PORT, () => {
-  console.log(`Serveur lancé sur http://localhost:${PORT}`);
-});
+app.listen(PORT, "0.0.0.0", () => console.log("Server lancé sur le port", PORT))

@@ -65,11 +65,18 @@
     <% if (typesSeance && typesSeance.length > 0) { %>
       <ul style="margin-top:10px;">
         <% typesSeance.forEach(t => { %>
-          <li>
-            <strong><%= t.nom %></strong> (<%= t.duree_minutes %> min)
-            <% if (t.description) { %>
-              <br><span class="text-muted"><%= t.description %></span>
-            <% } %>
+          <li style="display:flex; gap:10px; align-items:flex-start; justify-content:space-between;">
+            <div>
+              <strong><%= t.nom %></strong> (<%= t.duree_minutes %> min)
+              <% if (t.description) { %>
+                <br><span class="text-muted"><%= t.description %></span>
+              <% } %>
+            </div>
+
+            <form method="POST" action="/auth/types-seance/<%= t.id %>/delete"
+                  onsubmit="return confirm('Supprimer ce type de séance ?');">
+              <button type="submit" class="btn btn-danger" style="padding:6px 10px;">Supprimer</button>
+            </form>
           </li>
         <% }) %>
       </ul>
