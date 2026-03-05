@@ -275,7 +275,7 @@ app.post("/auth/login", async (req, res) => {
     }
 
     const user = rows[0];
-    const ok = await bcrypt.compare(password, user.mot_de_passe);
+    const ok = await bcrypt.compare(mot_de_passe, user.mot_de_passe);
     if (!ok) {
       return res.render("login", { error: "Identifiants invalides." });
     }
