@@ -1,0 +1,4 @@
+User-agent: *
+Disallow: /auth/
+Allow: /rdv
+Sitemap: https://rdv.dansmabulle-reflexologue.fr/sitemap.xml
