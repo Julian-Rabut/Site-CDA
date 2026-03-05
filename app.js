@@ -11,6 +11,7 @@ const mysql = require("mysql2/promise");
 
 const app = express();
 app.use(helmet({ contentSecurityPolicy: false }));
+app.set("trust proxy", 1);
 
 const nodemailer = require("nodemailer");
 
@@ -253,7 +254,17 @@ async function hasOverlap(connOrPool, userId, startSql, endSql, excludeId = null
 // ===================== ROUTES AUTH (login/register/logout) =====================
 
 app.get("/", (req, res) => {
-  if (req.session.user) return res.redirect("/auth/dashboard");
+  const host = (req.hostname || "").toLowerCase(); // ex: pro.dansmabulle-reflexologue.fr
+
+  if (host.startsWith("pro.")) {
+    return res.redirect("/auth/login");
+  }
+
+  if (host.startsWith("rdv.")) {
+    return res.redirect("/rdv");
+  }
+
+  // fallback (si quelqu’un utilise l’URL railway)
   return res.redirect("/rdv");
 });
 
