@@ -254,17 +254,17 @@ async function hasOverlap(connOrPool, userId, startSql, endSql, excludeId = null
 // ===================== ROUTES AUTH (login/register/logout) =====================
 
 app.get("/", (req, res) => {
-  const host = (req.hostname || "").toLowerCase(); // ex: pro.dansmabulle-reflexologue.fr
+  const host = (req.hostname || "").toLowerCase();
 
   if (host.startsWith("pro.")) {
     return res.redirect("/auth/login");
   }
 
   if (host.startsWith("rdv.")) {
-    return res.redirect("/rdv");
+    res.locals.publicPage = true;
+    return res.render("rdv"); 
   }
 
-  // fallback (si quelqu’un utilise l’URL railway)
   return res.redirect("/rdv");
 });
 
