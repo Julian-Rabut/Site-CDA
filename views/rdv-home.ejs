@@ -1,0 +1,37 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+  <%- include('partials/head', { title: 'Prendre rendez-vous en réflexologie', extraCss: [] }) %>
+  <meta name="description" content="Prenez rendez-vous en ligne avec Dans Ma Bulle Réflexologue. Créez votre compte client, connectez-vous et gérez vos rendez-vous.">
+  <meta name="robots" content="index, follow">
+  <link rel="canonical" href="https://rdv.dansmabulle-reflexologue.fr/">
+</head>
+<body>
+  <%- include('partials/header') %>
+
+  <div class="page">
+    <div class="header">
+      <div>
+        <h1>Prendre rendez-vous en ligne</h1>
+        <small>Réservez facilement votre séance de réflexologie.</small>
+      </div>
+    </div>
+
+    <div class="card">
+      <h2>Votre espace rendez-vous</h2>
+      <p>
+        Créez votre compte client ou connectez-vous pour réserver un créneau,
+        retrouver vos rendez-vous à venir, consulter vos anciens rendez-vous
+        et mettre à jour votre fiche client.
+      </p>
+
+      <div style="display:flex; gap:12px; flex-wrap:wrap; margin-top:16px;">
+        <a class="btn" href="/client/login">Se connecter</a>
+        <a class="btn btn-outline" href="/client/register">Créer un compte</a>
+      </div>
+    </div>
+  </div>
+
+  <%- include('partials/footer') %>
+</body>
+</html>

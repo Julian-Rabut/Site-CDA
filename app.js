@@ -275,13 +275,11 @@ app.get("/", (req, res) => {
   }
 
   if (host.startsWith("rdv.")) {
-    if (req.session.client) {
-      return res.redirect("/rdv");
-    }
-    return res.redirect("/client/login");
+    res.locals.publicPage = true;
+    return res.render("rdv-home");
   }
 
-  return res.redirect("/rdv");
+  return res.redirect("https://rdv.dansmabulle-reflexologue.fr/");
 });
 
 app.get("/auth/login", (req, res) => {
