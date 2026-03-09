@@ -1,20 +1,21 @@
 <!DOCTYPE html>
 <html lang="fr">
 <head>
-  <meta charset="UTF-8">
-  <title>Choisir un praticien</title>
-  <link rel="stylesheet" href="/style.css">
+  <%- include('partials/head', { title: 'Choisir un praticien', extraCss: [] }) %>
+  <meta name="robots" content="noindex, nofollow">
 </head>
 <body>
+  <%- include('partials/header') %>
+
   <div class="page">
     <div class="header">
       <div>
-        <h1>Prendre rendez-vous</h1>
+        <h1>Prendre un Rendez-vous</h1>
       </div>
     </div>
 
     <div class="card">
-      <h2>Dansmabulle</h2>
+      <h2>Dans Ma Bulle</h2>
 
       <% if (praticiens.length === 0) { %>
         <p class="text-muted">Aucun praticien enregistré pour le moment.</p>
@@ -22,7 +23,7 @@
         <ul>
           <% praticiens.forEach(p => { %>
             <li>
-              <div style="display:flex; justify-content:space-between; align-items:center;">
+              <div style="display:flex; justify-content:space-between; align-items:center; gap:16px; flex-wrap:wrap;">
                 <div>
                   <strong><%= p.nom %></strong><br>
                   <span class="text-muted"><%= p.email %></span>
@@ -35,5 +36,7 @@
       <% } %>
     </div>
   </div>
+
+  <%- include('partials/footer') %>
 </body>
 </html>

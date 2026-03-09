@@ -1,21 +1,21 @@
-<%
-  const isPublic = (typeof publicPage !== "undefined") ? publicPage : false;
-  const u = (typeof user !== "undefined") ? user : (typeof locals !== "undefined" ? locals.user : null);
-%>
-
-
 <header class="site-header">
   <div class="site-header__inner">
-    <a class="site-brand" href="<%= isPublic ? '/rdv' : '/auth/dashboard' %>">Agenda RDV</a>
+    <a class="site-brand" href="<%= publicPage ? '/rdv' : '/auth/dashboard' %>">Agenda RDV</a>
 
     <nav class="site-nav">
-      <% if (!isPublic && u) { %>
+      <% if (!publicPage && user) { %>
         <a class="btn btn-outline" href="/auth/dashboard">Dashboard</a>
         <a class="btn btn-outline" href="/auth/clients">Clients</a>
         <a class="btn btn-outline" href="/auth/rdvs">Rendez-vous</a>
         <a class="btn btn-outline" href="/auth/calendar">Calendrier</a>
-        <a class="btn btn-outline" href="/auth/profil">profil</a>
+        <a class="btn btn-outline" href="/auth/profil">Profil</a>
         <a class="btn btn-outline" href="/auth/logout">Déconnexion</a>
+      <% } %>
+
+      <% if (publicPage && clientSession) { %>
+        <span style="margin-right:8px;">Bonjour <strong><%= clientSession.nom %></strong></span>
+        <a class="btn btn-outline" href="/client/compte">Mon espace</a>
+        <a class="btn btn-outline" href="/client/logout">Déconnexion</a>
       <% } %>
     </nav>
   </div>

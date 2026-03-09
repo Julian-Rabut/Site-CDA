@@ -1,0 +1,136 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+  <%- include('partials/head', { title: 'Mon espace client', extraCss: [] }) %>
+  <meta name="robots" content="noindex, nofollow">
+</head>
+<body>
+  <%- include('partials/header') %>
+
+  <div class="page">
+    <div class="header">
+      <div>
+        <h1>Mon espace client</h1>
+        <small>Retrouvez vos rendez-vous et votre fiche personnelle.</small>
+      </div>
+    </div>
+
+    <% if (success) { %>
+      <div class="alert success"><%= success %></div>
+    <% } %>
+
+    <% if (error) { %>
+      <div class="message-error"><%= error %></div>
+    <% } %>
+
+    <div class="card" style="margin-bottom:16px;">
+      <div style="display:flex; gap:10px; flex-wrap:wrap;">
+        <a class="btn <%= tab === 'rdv' ? '' : 'btn-outline' %>" href="/client/compte?tab=rdv">Rendez-vous</a>
+        <a class="btn <%= tab === 'anciens' ? '' : 'btn-outline' %>" href="/client/compte?tab=anciens">Anciens rendez-vous</a>
+        <a class="btn <%= tab === 'fiche' ? '' : 'btn-outline' %>" href="/client/compte?tab=fiche">Ma fiche client</a>
+      </div>
+    </div>
+
+    <% if (tab === 'rdv') { %>
+      <div class="card">
+        <h2>Mes rendez-vous à venir</h2>
+
+        <% if (nextRdv) { %>
+          <div style="margin:16px 0; padding:16px; border:1px solid #dfe7df; border-radius:12px; background:#f8fff8;">
+            <div style="margin-bottom:8px;"><strong>Prochain rendez-vous</strong></div>
+            <div><strong>Praticienne :</strong> <%= nextRdv.pro_nom %></div>
+            <div><strong>Type :</strong> <%= nextRdv.type_seance || '—' %></div>
+            <div><strong>Début :</strong> <%= new Date(nextRdv.date_heure_debut).toLocaleString("fr-FR") %></div>
+            <div><strong>Fin :</strong> <%= new Date(nextRdv.date_heure_fin).toLocaleString("fr-FR") %></div>
+
+            <% if (nextRdv.commentaire) { %>
+              <div><strong>Commentaire :</strong> <%= nextRdv.commentaire %></div>
+            <% } %>
+          </div>
+        <% } %>
+
+        <% if (upcoming && upcoming.length > 0) { %>
+          <ul>
+            <% upcoming.forEach(r => { %>
+              <li>
+                <strong><%= new Date(r.date_heure_debut).toLocaleString("fr-FR") %></strong>
+                → <%= new Date(r.date_heure_fin).toLocaleString("fr-FR") %><br>
+                <strong>Praticienne :</strong> <%= r.pro_nom %><br>
+                <strong>Type :</strong> <%= r.type_seance || '—' %><br>
+
+                <% if (r.commentaire) { %>
+                  <strong>Commentaire :</strong> <%= r.commentaire %><br>
+                <% } %>
+
+                <form method="POST" action="/client/rdv/<%= r.id %>/annuler" style="margin-top:10px;">
+                  <button class="btn btn-outline" type="submit" onclick="return confirm('Confirmer l’annulation de ce rendez-vous ?')">
+                    Annuler
+                  </button>
+                </form>
+              </li>
+            <% }) %>
+          </ul>
+        <% } else { %>
+          <p class="text-muted">Vous n’avez aucun rendez-vous à venir.</p>
+          <a href="/rdv" class="btn">Prendre un rendez-vous</a>
+        <% } %>
+      </div>
+    <% } %>
+
+    <% if (tab === 'anciens') { %>
+      <div class="card">
+        <h2>Mes anciens rendez-vous</h2>
+
+        <% if (past && past.length > 0) { %>
+          <ul>
+            <% past.forEach(r => { %>
+              <li>
+                <strong><%= new Date(r.date_heure_debut).toLocaleString("fr-FR") %></strong>
+                → <%= new Date(r.date_heure_fin).toLocaleString("fr-FR") %><br>
+                <strong>Praticienne :</strong> <%= r.pro_nom %><br>
+                <strong>Type :</strong> <%= r.type_seance || '—' %>
+              </li>
+            <% }) %>
+          </ul>
+        <% } else { %>
+          <p class="text-muted">Aucun ancien rendez-vous pour le moment.</p>
+        <% } %>
+      </div>
+    <% } %>
+
+    <% if (tab === 'fiche') { %>
+      <div class="card">
+        <h2>Ma fiche client</h2>
+
+        <form method="POST" action="/client/fiche">
+          <label>Nom complet</label>
+          <input type="text" name="nom" value="<%= clientData.nom || '' %>" required>
+
+          <label>Email</label>
+          <input type="email" name="email" value="<%= clientData.email || '' %>" required>
+
+          <label>Téléphone</label>
+          <input type="text" name="telephone" value="<%= clientData.telephone || '' %>" required>
+
+          <hr style="margin:16px 0;">
+
+          <p class="text-muted">Laissez les champs mot de passe vides si vous ne souhaitez pas le modifier.</p>
+
+          <label>Mot de passe actuel</label>
+          <input type="password" name="mot_de_passe_actuel">
+
+          <label>Nouveau mot de passe</label>
+          <input type="password" name="mot_de_passe">
+
+          <label>Confirmation du nouveau mot de passe</label>
+          <input type="password" name="mot_de_passe_confirm">
+
+          <button class="btn" type="submit">Enregistrer les modifications</button>
+        </form>
+      </div>
+    <% } %>
+  </div>
+
+  <%- include('partials/footer') %>
+</body>
+</html>

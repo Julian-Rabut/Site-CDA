@@ -1,0 +1,47 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="robots" content="noindex, nofollow">
+  <title>Connexion client</title>
+  <link rel="stylesheet" href="/style.css">
+</head>
+<body>
+  <div class="page-simple">
+    <div class="header">
+      <div>
+        <h1>Connexion client</h1>
+        <small>Connectez-vous pour accéder à la réservation.</small>
+      </div>
+    </div>
+
+    <div class="card">
+      <% if (error) { %>
+        <div class="message-error"><%= error %></div>
+      <% } %>
+
+      <form action="/client/login" method="POST">
+        <input type="hidden" name="next" value="<%= next || '/rdv' %>">
+
+        <label>Email</label>
+        <input type="email" name="email" required>
+
+        <label>Mot de passe</label>
+        <input type="password" name="mot_de_passe" required>
+
+        <div style="margin:8px 0 14px;">
+            <a href="/client/mot-de-passe-oublie">Mot de passe oublié ?</a>
+        </div>
+
+        <button type="submit" class="btn">Se connecter</button>
+        </form>
+
+      <p class="text-muted" style="margin-top:12px;">
+        Vous n’avez pas encore de compte ?
+        <a href="/client/register?next=<%= encodeURIComponent(next || '/rdv') %>">Créer un compte</a>
+      </p>
+    </div>
+  </div>
+</body>
+</html>

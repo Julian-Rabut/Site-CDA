@@ -1,0 +1,52 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="robots" content="noindex, nofollow">
+  <title>Créer un compte client</title>
+  <link rel="stylesheet" href="/style.css">
+</head>
+<body>
+  <div class="page-simple">
+    <div class="header">
+      <div>
+        <h1>Créer un compte client</h1>
+        <small>Créez votre compte pour réserver vos rendez-vous.</small>
+      </div>
+    </div>
+
+    <div class="card">
+      <% if (error) { %>
+        <div class="message-error"><%= error %></div>
+      <% } %>
+
+      <form action="/client/register" method="POST">
+        <input type="hidden" name="next" value="<%= next || '/rdv' %>">
+
+        <label>Nom complet</label>
+        <input type="text" name="nom" required>
+
+        <label>Email</label>
+        <input type="email" name="email" required>
+
+        <label>Téléphone</label>
+        <input type="text" name="telephone" required>
+
+        <label>Mot de passe</label>
+        <input type="password" name="mot_de_passe" required>
+
+        <label>Confirmation du mot de passe</label>
+        <input type="password" name="mot_de_passe_confirm" required>
+
+        <button type="submit" class="btn">Créer mon compte</button>
+      </form>
+
+      <p class="text-muted" style="margin-top:12px;">
+        Vous avez déjà un compte ?
+        <a href="/client/login?next=<%= encodeURIComponent(next || '/rdv') %>">Se connecter</a>
+      </p>
+    </div>
+  </div>
+</body>
+</html>

@@ -1,0 +1,18 @@
+CREATE TABLE IF NOT EXISTS clients (
+  id INT NOT NULL AUTO_INCREMENT,
+  nom VARCHAR(120) NOT NULL,
+  email VARCHAR(190) NOT NULL,
+  telephone VARCHAR(40) DEFAULT NULL,
+  mot_de_passe VARCHAR(255) NOT NULL,
+  created_at TIMESTAMP NULL DEFAULT CURRENT_TIMESTAMP,
+  updated_at TIMESTAMP NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+  PRIMARY KEY (id),
+  UNIQUE KEY uniq_clients_email (email)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+
+ALTER TABLE rdv
+  ADD COLUMN client_id INT NULL AFTER user_id,
+  ADD KEY idx_rdv_client_id (client_id),
+  ADD CONSTRAINT fk_rdv_client
+    FOREIGN KEY (client_id) REFERENCES clients(id)
+    ON DELETE SET NULL;
