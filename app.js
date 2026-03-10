@@ -14,21 +14,11 @@ const app = express();
 app.use(helmet({ contentSecurityPolicy: false }));
 app.set("trust proxy", 1);
 
-const nodemailer = require("nodemailer");
+const { Resend } = require("resend");
 
-const mailTransport = process.env.SMTP_HOST ? nodemailer.createTransport({
-  host: process.env.SMTP_HOST,
-  port: Number(process.env.SMTP_PORT || 587),
-  secure: String(process.env.SMTP_SECURE || "false") === "true", 
-  auth: {
-    user: process.env.SMTP_USER,
-    pass: process.env.SMTP_PASS,
-  },
-  tls: {
-    rejectUnauthorized: false,
-  },
-}) : null;
-
+const resend = process.env.RESEND_API_KEY
+  ? new Resend(process.env.RESEND_API_KEY)
+  : null;
 
 async function consumeFreeSlots(connOrPool, userId, startSql, endSql, excludeCreneauId = null) {
   // Récupère les libres qui chevauchent
@@ -96,21 +86,42 @@ async function consumeFreeSlots(connOrPool, userId, startSql, endSql, excludeCre
     }
   }
 }
-async function sendMailSafe({ to, subject, text }) {
+async function sendMailSafe({ to, subject, text, html }) {
   try {
     if (process.env.DISABLE_MAIL === "true") {
-      console.log("MAIL DISABLED (DEV):", subject, "->", to);
-      return;
+      console.log("MAIL DISABLED:", subject, "->", to);
+      return false;
     }
-      if (!mailTransport) return;
-      await mailTransport.sendMail({
-        from: process.env.MAIL_FROM || process.env.SMTP_USER,
-        to,
-        subject,
-        text,
-      });
+
+    if (!resend) {
+      console.error("MAIL ERROR: RESEND_API_KEY manquante");
+      return false;
+    }
+
+    const payload = {
+      from: process.env.MAIL_FROM,
+      to: Array.isArray(to) ? to : [to],
+      subject,
+    };
+
+    if (html) {
+      payload.html = html;
+    } else {
+      payload.html = `<pre style="font-family:Arial,sans-serif;white-space:pre-wrap;">${String(text || "").replace(/</g, "&lt;").replace(/>/g, "&gt;")}</pre>`;
+    }
+
+    const { data, error } = await resend.emails.send(payload);
+
+    if (error) {
+      console.error("MAIL ERROR DETAIL:", error);
+      return false;
+    }
+
+    console.log("MAIL SENT:", data?.id || "ok", "->", payload.to.join(", "));
+    return true;
   } catch (e) {
-    console.error("MAIL ERROR:", e.message);
+    console.error("MAIL ERROR DETAIL:", e);
+    return false;
   }
 }
 
