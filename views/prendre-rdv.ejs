@@ -23,63 +23,99 @@
     <% } %>
 
     <% if (profile) { %>
-      <div class="card" style="margin-bottom:16px;">
-        <h2 style="margin-top:0;"><%= profile.titre || "Votre praticien" %></h2>
+  <div class="card profile-pro-card">
+    <h2 class="profile-pro-title"><%= profile.titre || "Votre praticien" %></h2>
 
+    <div class="profile-pro-top">
+      <div class="profile-pro-photo-col">
         <% if (profile.photo_url) { %>
-          <div style="margin:10px 0;">
-            <img src="<%= profile.photo_url %>" alt="Photo du praticien"
-                style="max-width:140px; border-radius:12px; border:1px solid #e5e5e5;">
+          <img
+            src="<%= profile.photo_url %>"
+            alt="Photo du praticien"
+            class="profile-pro-photo"
+          >
+        <% } else { %>
+          <div class="profile-pro-photo profile-pro-photo-placeholder">
+            Aucune photo
+          </div>
+        <% } %>
+      </div>
+
+      <div class="profile-pro-contact">
+        <% if (profile.telephone) { %>
+          <div class="profile-pro-line">
+            <span class="profile-pro-label">Téléphone</span>
+            <span class="profile-pro-value"><%= profile.telephone %></span>
           </div>
         <% } %>
 
-        <% if (profile.description) { %>
-          <p style="margin:8px 0;"><%= profile.description %></p>
-        <% } %>
-
-        <% if (profile.description_seances) { %>
-          <div style="margin-top:12px;">
-            <strong>Les séances :</strong>
-            <pre style="white-space:pre-wrap; margin:6px 0 0;"><%= profile.description_seances %></pre>
+        <% if (profile.email_public) { %>
+          <div class="profile-pro-line">
+            <span class="profile-pro-label">Mail</span>
+            <span class="profile-pro-value"><%= profile.email_public %></span>
           </div>
         <% } %>
 
-        <div style="margin-top:10px;">
-          <% if (profile.telephone) { %><div><strong>Téléphone :</strong> <%= profile.telephone %></div><% } %>
-          <% if (profile.email_public) { %><div><strong>Email :</strong> <%= profile.email_public %></div><% } %>
+        <% if (profile.adresse || profile.ville) { %>
+          <div class="profile-pro-line">
+            <span class="profile-pro-label">Adresse</span>
+            <span class="profile-pro-value"><%= [profile.adresse, profile.ville].filter(Boolean).join(", ") %></span>
+          </div>
+        <% } %>
 
-          <% if (profile.adresse || profile.ville) { %>
-            <div><strong>Adresse :</strong> <%= [profile.adresse, profile.ville].filter(Boolean).join(", ") %></div>
-          <% } %>
+        <% if (profile.itineraire_url) { %>
+          <div class="profile-pro-itineraire">
+            <a href="<%= profile.itineraire_url %>" target="_blank" rel="noreferrer">Voir l’itinéraire</a>
+          </div>
+        <% } %>
+      </div>
+    </div>
 
-          <% if (profile.itineraire_url) { %>
-            <div><a href="<%= profile.itineraire_url %>" target="_blank" rel="noreferrer">Voir l’itinéraire</a></div>
-          <% } %>
-
-          <% if (profile.paiement) { %>
-            <div style="margin-top:8px;"><strong>Paiement :</strong> <%= profile.paiement %></div>
-          <% } %>
-
-          <% if (profile.tarifs) { %>
-            <div style="margin-top:12px;">
-              <strong>Tarifs :</strong>
-              <pre style="white-space:pre-wrap; margin:6px 0 0;"><%= profile.tarifs %></pre>
-            </div>
-          <% } %>
-
-          <% if (profile.horaires) { %>
-            <div style="margin-top:12px;">
-              <strong>Horaires :</strong>
-              <pre style="white-space:pre-wrap; margin:6px 0 0;"><%= profile.horaires %></pre>
-            </div>
-          <% } %>
-
-          <% if (profile.regles) { %>
-            <div style="margin-top:8px;"><strong>Infos / règles :</strong><br><%= profile.regles %></div>
-          <% } %>
+    <div class="profile-pro-infos-row">
+      <% if (profile.horaires) { %>
+        <div class="profile-pro-box">
+          <h3>Horaires</h3>
+          <div class="profile-pro-text"><%= profile.horaires %></div>
         </div>
+      <% } %>
+
+      <% if (profile.tarifs) { %>
+        <div class="profile-pro-box">
+          <h3>Tarifs</h3>
+          <div class="profile-pro-text"><%= profile.tarifs %></div>
+        </div>
+      <% } %>
+
+      <% if (profile.paiement) { %>
+        <div class="profile-pro-box">
+          <h3>Paiements</h3>
+          <div class="profile-pro-text"><%= profile.paiement %></div>
+        </div>
+      <% } %>
+    </div>
+
+    <% if (profile.regles) { %>
+      <div class="profile-pro-full">
+        <h3>Règles / informations</h3>
+        <div class="profile-pro-text"><%= profile.regles %></div>
       </div>
     <% } %>
+
+    <% if (profile.description) { %>
+      <div class="profile-pro-full">
+        <h3>Description</h3>
+        <div class="profile-pro-text"><%= profile.description %></div>
+      </div>
+    <% } %>
+
+    <% if (profile.description_seances) { %>
+      <div class="profile-pro-full">
+        <h3>Les séances</h3>
+        <div class="profile-pro-text"><%= profile.description_seances %></div>
+      </div>
+    <% } %>
+  </div>
+<% } %>
 
 
 

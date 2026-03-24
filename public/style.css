@@ -398,3 +398,133 @@ input:focus {
   margin-right: 4px;
 }
 
+/* ================================
+   PROFIL PRO - PAGE PRENDRE RDV
+================================ */
+.profile-pro-card {
+  margin-bottom: 20px;
+  font-family: system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+}
+
+.profile-pro-title {
+  text-align: center;
+  font-size: 1.6rem;
+  font-weight: 700;
+  margin-bottom: 22px;
+  color: #233044;
+}
+
+.profile-pro-card h3 {
+  font-size: 1rem;
+  font-weight: 700;
+  margin-bottom: 10px;
+  color: #233044;
+}
+
+.profile-pro-top {
+  display: grid;
+  grid-template-columns: 220px 1fr;
+  gap: 22px;
+  align-items: start;
+  margin-bottom: 22px;
+}
+
+.profile-pro-photo-col {
+  width: 100%;
+}
+
+.profile-pro-photo {
+  width: 100%;
+  max-width: 220px;
+  height: 220px;
+  object-fit: cover;
+  border-radius: 18px;
+  border: 1px solid #e2e6f2;
+  display: block;
+  background: #f6f8fc;
+}
+
+.profile-pro-photo-placeholder {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: #7b8395;
+  font-size: 0.95rem;
+}
+
+.profile-pro-contact {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  min-width: 0;
+}
+
+.profile-pro-line {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+  padding: 12px 14px;
+  background: #fafbff;
+  border: 1px solid #e2e6f2;
+  border-radius: 14px;
+}
+
+.profile-pro-label {
+  font-size: 0.85rem;
+  font-weight: 700;
+  color: #66748b;
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
+}
+
+.profile-pro-value {
+  font-size: 1rem;
+  color: #233044;
+  line-height: 1.5;
+  word-break: break-word;
+}
+
+.profile-pro-itineraire {
+  margin-top: 4px;
+}
+
+.profile-pro-infos-row {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 16px;
+  margin-bottom: 16px;
+}
+
+.profile-pro-box,
+.profile-pro-full {
+  background: #fafbff;
+  border: 1px solid #e2e6f2;
+  border-radius: 16px;
+  padding: 16px;
+}
+
+.profile-pro-full {
+  margin-top: 16px;
+}
+
+.profile-pro-text {
+  white-space: pre-wrap;
+  line-height: 1.7;
+  font-size: 0.98rem;
+  color: #233044;
+  word-break: break-word;
+}
+
+@media (max-width: 900px) {
+  .profile-pro-top {
+    grid-template-columns: 1fr;
+  }
+
+  .profile-pro-photo {
+    max-width: 260px;
+  }
+
+  .profile-pro-infos-row {
+    grid-template-columns: 1fr;
+  }
+}
