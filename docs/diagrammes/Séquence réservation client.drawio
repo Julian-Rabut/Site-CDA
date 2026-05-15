@@ -1,0 +1,165 @@
+<mxfile host="app.diagrams.net">
+  <diagram name="Page-1" id="ZAN1iOZ0DzckA9bbP0Da">
+    <mxGraphModel dx="1030" dy="562" grid="1" gridSize="10" guides="1" tooltips="1" connect="1" arrows="1" fold="1" page="1" pageScale="1" pageWidth="827" pageHeight="1169" math="0" shadow="0">
+      <root>
+        <mxCell id="0" />
+        <mxCell id="1" parent="0" />
+        <mxCell id="mFsFZg5QBRAb2A9LztOi-1" parent="1" style="shape=umlLifeline;perimeter=lifelinePerimeter;whiteSpace=wrap;container=1;dropTarget=0;collapsible=0;recursiveResize=0;outlineConnect=0;portConstraint=eastwest;newEdgeStyle={&quot;edgeStyle&quot;:&quot;elbowEdgeStyle&quot;,&quot;elbow&quot;:&quot;vertical&quot;,&quot;curved&quot;:0,&quot;rounded&quot;:0};participant=umlActor;verticalAlign=bottom;labelPosition=center;verticalLabelPosition=top;align=center;size=65;fillColor=light-dark(#eeeeee,#1f2020);strokeColor=light-dark(#999999,#cccccc);fontColor=light-dark(#333333,#cccccc);" value="Client" vertex="1">
+          <mxGeometry height="1240" width="35" x="20" y="20" as="geometry" />
+        </mxCell>
+        <mxCell id="mFsFZg5QBRAb2A9LztOi-2" parent="1" style="shape=umlLifeline;perimeter=lifelinePerimeter;whiteSpace=wrap;container=1;dropTarget=0;collapsible=0;recursiveResize=0;outlineConnect=0;portConstraint=eastwest;newEdgeStyle={&quot;edgeStyle&quot;:&quot;elbowEdgeStyle&quot;,&quot;elbow&quot;:&quot;vertical&quot;,&quot;curved&quot;:0,&quot;rounded&quot;:0};size=65;fillColor=light-dark(#eeeeee,#1f2020);strokeColor=light-dark(#999999,#cccccc);fontColor=light-dark(#333333,#cccccc);" value="Interface web" vertex="1">
+          <mxGeometry height="1240" width="150" x="304" y="20" as="geometry" />
+        </mxCell>
+        <mxCell id="mFsFZg5QBRAb2A9LztOi-3" parent="1" style="shape=umlLifeline;perimeter=lifelinePerimeter;whiteSpace=wrap;container=1;dropTarget=0;collapsible=0;recursiveResize=0;outlineConnect=0;portConstraint=eastwest;newEdgeStyle={&quot;edgeStyle&quot;:&quot;elbowEdgeStyle&quot;,&quot;elbow&quot;:&quot;vertical&quot;,&quot;curved&quot;:0,&quot;rounded&quot;:0};size=65;fillColor=light-dark(#eeeeee,#1f2020);strokeColor=light-dark(#999999,#cccccc);fontColor=light-dark(#333333,#cccccc);" value="Serveur Express" vertex="1">
+          <mxGeometry height="1240" width="150" x="566" y="20" as="geometry" />
+        </mxCell>
+        <mxCell id="mFsFZg5QBRAb2A9LztOi-4" parent="1" style="shape=umlLifeline;perimeter=lifelinePerimeter;whiteSpace=wrap;container=1;dropTarget=0;collapsible=0;recursiveResize=0;outlineConnect=0;portConstraint=eastwest;newEdgeStyle={&quot;edgeStyle&quot;:&quot;elbowEdgeStyle&quot;,&quot;elbow&quot;:&quot;vertical&quot;,&quot;curved&quot;:0,&quot;rounded&quot;:0};size=65;fillColor=light-dark(#eeeeee,#1f2020);strokeColor=light-dark(#999999,#cccccc);fontColor=light-dark(#333333,#cccccc);" value="Base MySQL" vertex="1">
+          <mxGeometry height="1240" width="150" x="909" y="20" as="geometry" />
+        </mxCell>
+        <mxCell id="mFsFZg5QBRAb2A9LztOi-5" parent="1" style="shape=umlLifeline;perimeter=lifelinePerimeter;whiteSpace=wrap;container=1;dropTarget=0;collapsible=0;recursiveResize=0;outlineConnect=0;portConstraint=eastwest;newEdgeStyle={&quot;edgeStyle&quot;:&quot;elbowEdgeStyle&quot;,&quot;elbow&quot;:&quot;vertical&quot;,&quot;curved&quot;:0,&quot;rounded&quot;:0};size=65;fillColor=light-dark(#eeeeee,#1f2020);strokeColor=light-dark(#999999,#cccccc);fontColor=light-dark(#333333,#cccccc);" value="Resend" vertex="1">
+          <mxGeometry height="1240" width="150" x="1109" y="20" as="geometry" />
+        </mxCell>
+        <mxCell id="mFsFZg5QBRAb2A9LztOi-6" edge="1" parent="1" source="mFsFZg5QBRAb2A9LztOi-1" style="verticalAlign=bottom;edgeStyle=elbowEdgeStyle;elbow=vertical;curved=0;rounded=0;endArrow=block;" target="mFsFZg5QBRAb2A9LztOi-2" value="Sélectionne un type de séance">
+          <mxGeometry relative="1" as="geometry">
+            <Array as="points">
+              <mxPoint x="246" y="129" />
+            </Array>
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="mFsFZg5QBRAb2A9LztOi-7" edge="1" parent="1" source="mFsFZg5QBRAb2A9LztOi-2" style="verticalAlign=bottom;edgeStyle=elbowEdgeStyle;elbow=vertical;curved=0;rounded=0;endArrow=block;" target="mFsFZg5QBRAb2A9LztOi-3" value="GET /rdv/:userId?type=id">
+          <mxGeometry relative="1" as="geometry">
+            <Array as="points">
+              <mxPoint x="519" y="183" />
+            </Array>
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="mFsFZg5QBRAb2A9LztOi-8" edge="1" parent="1" source="mFsFZg5QBRAb2A9LztOi-3" style="verticalAlign=bottom;edgeStyle=elbowEdgeStyle;elbow=vertical;curved=0;rounded=0;endArrow=block;" target="mFsFZg5QBRAb2A9LztOi-4" value="Recherche créneaux libres compatibles">
+          <mxGeometry relative="1" as="geometry">
+            <Array as="points">
+              <mxPoint x="821" y="237" />
+            </Array>
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="mFsFZg5QBRAb2A9LztOi-9" edge="1" parent="1" source="mFsFZg5QBRAb2A9LztOi-4" style="verticalAlign=bottom;edgeStyle=elbowEdgeStyle;elbow=vertical;curved=0;rounded=0;dashed=1;dashPattern=2 3;endArrow=block;" target="mFsFZg5QBRAb2A9LztOi-3" value="Liste des créneaux">
+          <mxGeometry relative="1" as="geometry">
+            <Array as="points">
+              <mxPoint x="824" y="291" />
+            </Array>
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="mFsFZg5QBRAb2A9LztOi-10" edge="1" parent="1" source="mFsFZg5QBRAb2A9LztOi-3" style="verticalAlign=bottom;edgeStyle=elbowEdgeStyle;elbow=vertical;curved=0;rounded=0;dashed=1;dashPattern=2 3;endArrow=block;" target="mFsFZg5QBRAb2A9LztOi-2" value="Affichage des créneaux">
+          <mxGeometry relative="1" as="geometry">
+            <Array as="points">
+              <mxPoint x="522" y="345" />
+            </Array>
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="mFsFZg5QBRAb2A9LztOi-11" edge="1" parent="1" source="mFsFZg5QBRAb2A9LztOi-1" style="verticalAlign=bottom;edgeStyle=elbowEdgeStyle;elbow=vertical;curved=0;rounded=0;endArrow=block;" target="mFsFZg5QBRAb2A9LztOi-2" value="Choisit un créneau">
+          <mxGeometry relative="1" as="geometry">
+            <Array as="points">
+              <mxPoint x="246" y="399" />
+            </Array>
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="mFsFZg5QBRAb2A9LztOi-12" edge="1" parent="1" source="mFsFZg5QBRAb2A9LztOi-2" style="verticalAlign=bottom;edgeStyle=elbowEdgeStyle;elbow=vertical;curved=0;rounded=0;endArrow=block;" target="mFsFZg5QBRAb2A9LztOi-3" value="GET /rdv/reserver/:id">
+          <mxGeometry relative="1" as="geometry">
+            <Array as="points">
+              <mxPoint x="519" y="453" />
+            </Array>
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="mFsFZg5QBRAb2A9LztOi-13" edge="1" parent="1" source="mFsFZg5QBRAb2A9LztOi-3" style="verticalAlign=bottom;edgeStyle=elbowEdgeStyle;elbow=vertical;curved=0;rounded=0;endArrow=block;" target="mFsFZg5QBRAb2A9LztOi-4" value="Vérifie disponibilité">
+          <mxGeometry relative="1" as="geometry">
+            <Array as="points">
+              <mxPoint x="821" y="507" />
+            </Array>
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="mFsFZg5QBRAb2A9LztOi-14" edge="1" parent="1" source="mFsFZg5QBRAb2A9LztOi-4" style="verticalAlign=bottom;edgeStyle=elbowEdgeStyle;elbow=vertical;curved=0;rounded=0;dashed=1;dashPattern=2 3;endArrow=block;" target="mFsFZg5QBRAb2A9LztOi-3" value="Créneau disponible">
+          <mxGeometry relative="1" as="geometry">
+            <Array as="points">
+              <mxPoint x="824" y="561" />
+            </Array>
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="mFsFZg5QBRAb2A9LztOi-15" edge="1" parent="1" source="mFsFZg5QBRAb2A9LztOi-3" style="verticalAlign=bottom;edgeStyle=elbowEdgeStyle;elbow=vertical;curved=0;rounded=0;dashed=1;dashPattern=2 3;endArrow=block;" target="mFsFZg5QBRAb2A9LztOi-2" value="Formulaire de confirmation">
+          <mxGeometry relative="1" as="geometry">
+            <Array as="points">
+              <mxPoint x="522" y="615" />
+            </Array>
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="mFsFZg5QBRAb2A9LztOi-16" edge="1" parent="1" source="mFsFZg5QBRAb2A9LztOi-1" style="verticalAlign=bottom;edgeStyle=elbowEdgeStyle;elbow=vertical;curved=0;rounded=0;endArrow=block;" target="mFsFZg5QBRAb2A9LztOi-2" value="Valide la réservation">
+          <mxGeometry relative="1" as="geometry">
+            <Array as="points">
+              <mxPoint x="246" y="669" />
+            </Array>
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="mFsFZg5QBRAb2A9LztOi-17" edge="1" parent="1" source="mFsFZg5QBRAb2A9LztOi-2" style="verticalAlign=bottom;edgeStyle=elbowEdgeStyle;elbow=vertical;curved=0;rounded=0;endArrow=block;" target="mFsFZg5QBRAb2A9LztOi-3" value="POST /rdv/reserver">
+          <mxGeometry relative="1" as="geometry">
+            <Array as="points">
+              <mxPoint x="519" y="723" />
+            </Array>
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="mFsFZg5QBRAb2A9LztOi-18" edge="1" parent="1" source="mFsFZg5QBRAb2A9LztOi-3" style="verticalAlign=bottom;edgeStyle=elbowEdgeStyle;elbow=vertical;curved=0;rounded=0;endArrow=block;" target="mFsFZg5QBRAb2A9LztOi-4" value="Début transaction">
+          <mxGeometry relative="1" as="geometry">
+            <Array as="points">
+              <mxPoint x="821" y="777" />
+            </Array>
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="mFsFZg5QBRAb2A9LztOi-19" edge="1" parent="1" source="mFsFZg5QBRAb2A9LztOi-3" style="verticalAlign=bottom;edgeStyle=elbowEdgeStyle;elbow=vertical;curved=0;rounded=0;endArrow=block;" target="mFsFZg5QBRAb2A9LztOi-4" value="Verrouille le créneau">
+          <mxGeometry relative="1" as="geometry">
+            <Array as="points">
+              <mxPoint x="821" y="831" />
+            </Array>
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="mFsFZg5QBRAb2A9LztOi-20" edge="1" parent="1" source="mFsFZg5QBRAb2A9LztOi-3" style="verticalAlign=bottom;edgeStyle=elbowEdgeStyle;elbow=vertical;curved=0;rounded=0;endArrow=block;" target="mFsFZg5QBRAb2A9LztOi-4" value="Vérifie type de séance">
+          <mxGeometry relative="1" as="geometry">
+            <Array as="points">
+              <mxPoint x="821" y="885" />
+            </Array>
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="mFsFZg5QBRAb2A9LztOi-21" edge="1" parent="1" source="mFsFZg5QBRAb2A9LztOi-3" style="verticalAlign=bottom;edgeStyle=elbowEdgeStyle;elbow=vertical;curved=0;rounded=0;endArrow=block;" target="mFsFZg5QBRAb2A9LztOi-4" value="Met le créneau en réservé">
+          <mxGeometry relative="1" as="geometry">
+            <Array as="points">
+              <mxPoint x="821" y="939" />
+            </Array>
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="mFsFZg5QBRAb2A9LztOi-22" edge="1" parent="1" source="mFsFZg5QBRAb2A9LztOi-3" style="verticalAlign=bottom;edgeStyle=elbowEdgeStyle;elbow=vertical;curved=0;rounded=0;endArrow=block;" target="mFsFZg5QBRAb2A9LztOi-4" value="Crée le rendez-vous">
+          <mxGeometry relative="1" as="geometry">
+            <Array as="points">
+              <mxPoint x="821" y="993" />
+            </Array>
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="mFsFZg5QBRAb2A9LztOi-23" edge="1" parent="1" source="mFsFZg5QBRAb2A9LztOi-4" style="verticalAlign=bottom;edgeStyle=elbowEdgeStyle;elbow=vertical;curved=0;rounded=0;dashed=1;dashPattern=2 3;endArrow=block;" target="mFsFZg5QBRAb2A9LztOi-3" value="Confirmation">
+          <mxGeometry relative="1" as="geometry">
+            <Array as="points">
+              <mxPoint x="824" y="1047" />
+            </Array>
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="mFsFZg5QBRAb2A9LztOi-24" edge="1" parent="1" source="mFsFZg5QBRAb2A9LztOi-3" style="verticalAlign=bottom;edgeStyle=elbowEdgeStyle;elbow=vertical;curved=0;rounded=0;endArrow=block;" target="mFsFZg5QBRAb2A9LztOi-5" value="Email client + praticienne">
+          <mxGeometry relative="1" as="geometry">
+            <Array as="points">
+              <mxPoint x="921" y="1101" />
+            </Array>
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="mFsFZg5QBRAb2A9LztOi-25" edge="1" parent="1" source="mFsFZg5QBRAb2A9LztOi-3" style="verticalAlign=bottom;edgeStyle=elbowEdgeStyle;elbow=vertical;curved=0;rounded=0;dashed=1;dashPattern=2 3;endArrow=block;" target="mFsFZg5QBRAb2A9LztOi-2" value="Redirection espace client">
+          <mxGeometry relative="1" as="geometry">
+            <Array as="points">
+              <mxPoint x="522" y="1155" />
+            </Array>
+          </mxGeometry>
+        </mxCell>
+      </root>
+    </mxGraphModel>
+  </diagram>
+</mxfile>

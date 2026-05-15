@@ -23,3 +23,6 @@ Thumbs.db
 dist/
 build/
 .cache/
+
+# test
+coverage/

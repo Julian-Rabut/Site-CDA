@@ -1,60 +1,96 @@
-// routes/auth.js
+"use strict";
+
+const { body, validationResult } = require("express-validator");
 const express = require("express");
-const router = express.Router();
 const bcrypt = require("bcrypt");
+
 const pool = require("../config/db");
 
-// Middleware pour protéger certaines pages
-function requireLogin(req, res, next) {
-  if (!req.session || !req.session.user) {
-    return res.redirect("/auth/login");
-  }
-  next();
-}
+const router = express.Router();
 
-// Page de login (GET)
 router.get("/login", (req, res) => {
   res.render("login", { error: null });
 });
 
-// Traitement du login (POST)
-router.post("/login", async (req, res) => {
-  const { email, mot_de_passe } = req.body;
+router.post(
+  "/login",
 
-  try {
-    const [users] = await pool.query("SELECT * FROM users WHERE email = ?", [email]);
+  [
+    body("email")
+      .trim()
+      .isEmail()
+      .withMessage("Email invalide"),
 
-    if (users.length === 0) {
-      return res.render("login", { error: "Email introuvable" });
+    body("mot_de_passe")
+      .isLength({ min: 6 })
+      .withMessage("Mot de passe trop court")
+  ],
+
+  async (req, res) => {
+    try {
+
+      const errors = validationResult(req);
+
+      if (!errors.isEmpty()) {
+        return res.render("login", {
+          error: errors.array()[0].msg
+        });
+      }
+
+      const { email, mot_de_passe } = req.body;
+
+      const [rows] = await pool.query(
+        "SELECT * FROM users WHERE email=?",
+        [email]
+      );
+
+      if(rows.length===0){
+        return res.render("login",{
+          error:"Identifiants invalides."
+        });
+      }
+
+      const user=rows[0];
+
+      const ok=await bcrypt.compare(
+        mot_de_passe,
+        user.mot_de_passe
+      );
+
+      if(!ok){
+        return res.render("login",{
+          error:"Identifiants invalides."
+        });
+      }
+
+      req.session.user={
+        id:user.id,
+        nom:user.nom,
+        email:user.email,
+        role:user.role
+      };
+
+      return res.redirect("/auth/dashboard");
+
+    } catch(err){
+
+      console.error(err);
+
+      return res.render("login",{
+        error:"Erreur serveur."
+      });
+
     }
-
-    const user = users[0];
-
-    const match = await bcrypt.compare(mot_de_passe, user.mot_de_passe);
-    if (!match) {
-      return res.render("login", { error: "Mot de passe incorrect" });
-    }
-
-    // Stocker l'utilisateur dans la session
-    req.session.user = {
-      id: user.id,
-      nom: user.nom,
-      email: user.email,
-    };
-
-    res.redirect("/auth/dashboard");
-  } catch (err) {
-    console.error("Erreur login :", err);
-    res.status(500).send("Erreur serveur");
-  }
 });
 
-// Tableau de bord (protégé)
-router.get("/dashboard", requireLogin, (req, res) => {
-  res.render("dashboard", { user: req.session.user });
+router.get("/register", (req, res) => {
+  return res.redirect("/auth/login");
 });
 
-// Déconnexion
+router.post("/register", (req, res) => {
+  return res.redirect("/auth/login");
+});
+
 router.get("/logout", (req, res) => {
   req.session.destroy(() => {
     res.redirect("/auth/login");
