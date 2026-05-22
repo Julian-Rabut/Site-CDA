@@ -4,7 +4,11 @@
   <%- include('partials/head', { title: '404 - Page introuvable', extraCss: [] }) %>
 </head>
 <body>
-  <%- include('partials/header') %>
+  <header>
+  <div class="site-header__inner">
+    <a class="site-brand" href="<%= publicPage ? '/rdv' : '/client/login' %>">Agenda RDV</a>
+  </div>
+  </header>
   <div class="page-simple">
     <div class="header">
       <div>

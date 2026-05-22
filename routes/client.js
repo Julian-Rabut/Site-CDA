@@ -23,15 +23,8 @@ router.get("/login", (req, res) => {
 router.post(
   "/login",
   [
-    body("email")
-      .trim()
-      .isEmail()
-      .withMessage("Email invalide.")
-      .normalizeEmail(),
-
-    body("mot_de_passe")
-      .notEmpty()
-      .withMessage("Mot de passe requis."),
+    body("email").trim().isEmail().withMessage("Email invalide.").normalizeEmail(),
+    body("mot_de_passe").notEmpty().withMessage("Mot de passe requis."),
   ],
   async (req, res) => {
     try {
@@ -57,7 +50,7 @@ router.post(
 
       if (rows.length === 0) {
         return res.render("client-login", {
-          error: "Identifiants invalides.",
+          error: "Email ou mot de passe incorrect.",
           next: nextUrl,
         });
       }
@@ -67,7 +60,7 @@ router.post(
 
       if (!ok) {
         return res.render("client-login", {
-          error: "Identifiants invalides.",
+          error: "Email ou mot de passe incorrect.",
           next: nextUrl,
         });
       }
@@ -83,7 +76,7 @@ router.post(
     } catch (err) {
       console.error("Erreur login client :", err);
       return res.render("client-login", {
-        error: "Erreur serveur.",
+        error: "Impossible de se connecter pour le moment. Réessayez plus tard.",
         next: sanitizeNextUrl(req.body.next || "/rdv"),
       });
     }
@@ -102,20 +95,13 @@ router.get("/register", (req, res) => {
     },
   });
 });
+
 router.post(
   "/register",
-
   [
-    body("nom")
-      .trim()
-      .notEmpty()
-      .withMessage("Le nom est obligatoire."),
+    body("nom").trim().notEmpty().withMessage("Le nom est obligatoire."),
 
-    body("email")
-      .trim()
-      .isEmail()
-      .withMessage("Email invalide.")
-      .normalizeEmail(),
+    body("email").trim().isEmail().withMessage("Email invalide.").normalizeEmail(),
 
     body("telephone")
       .trim()
@@ -130,9 +116,8 @@ router.post(
 
     body("mot_de_passe_confirm")
       .custom((value, { req }) => value === req.body.mot_de_passe)
-      .withMessage("Les mots de passe ne correspondent pas.")
+      .withMessage("Les mots de passe ne correspondent pas."),
   ],
-
   async (req, res) => {
     try {
       res.locals.publicPage = true;
@@ -152,13 +137,7 @@ router.post(
         });
       }
 
-      const {
-        nom,
-        email,
-        telephone,
-        mot_de_passe
-      } = req.body;
-
+      const { nom, email, telephone, mot_de_passe } = req.body;
       const emailClean = email.trim().toLowerCase();
 
       const [exists] = await pool.query(
@@ -170,19 +149,15 @@ router.post(
         return res.render("client-register", {
           error: "Un compte client existe déjà avec cet email.",
           next: nextUrl,
-
           formData: {
             nom,
             email,
-            telephone
-          }
+            telephone,
+          },
         });
       }
 
-      const hash = await bcrypt.hash(
-        mot_de_passe,
-        10
-      );
+      const hash = await bcrypt.hash(mot_de_passe, 10);
 
       const [result] = await pool.query(
         `
@@ -190,12 +165,7 @@ router.post(
         (nom,email,telephone,mot_de_passe)
         VALUES (?,?,?,?)
         `,
-        [
-          nom.trim(),
-          emailClean,
-          telephone.trim(),
-          hash
-        ]
+        [nom.trim(), emailClean, telephone.trim(), hash]
       );
 
       req.session.client = {
@@ -205,33 +175,22 @@ router.post(
         telephone: telephone.trim(),
       };
 
-      return res.redirect(
-        nextUrl || "/rdv"
-      );
-
+      return res.redirect(nextUrl || "/rdv");
     } catch (err) {
+      console.error("Erreur register client :", err);
 
-      console.error(
-        "Erreur register client :",
-        err
-      );
-
-      return res.render(
-        "client-register",
-        {
-          error: "Erreur serveur.",
-
-          next: sanitizeNextUrl(
-            req.body.next || "/rdv"
-          ),
-
-          formData: {
-            nom: req.body.nom || "",
-            email: req.body.email || "",
-            telephone: req.body.telephone || "",
-          }
-        }
-      );
+      return res.render("client-register", {
+        error:
+          err && err.code === "ER_DUP_ENTRY"
+            ? "Un compte client existe déjà avec cet email."
+            : "Impossible de créer le compte. Vérifiez les informations saisies.",
+        next: sanitizeNextUrl(req.body.next || "/rdv"),
+        formData: {
+          nom: req.body.nom || "",
+          email: req.body.email || "",
+          telephone: req.body.telephone || "",
+        },
+      });
     }
   }
 );
@@ -241,6 +200,7 @@ router.get("/mot-de-passe-oublie", (req, res) => {
   res.render("client-forgot-password", {
     error: null,
     success: null,
+    devLink: null,
   });
 });
 
@@ -254,72 +214,82 @@ router.post(
       .normalizeEmail(),
   ],
   async (req, res) => {
-  try {
-    res.locals.publicPage = true;
-    const errors = validationResult(req);
+    try {
+      res.locals.publicPage = true;
 
-    if (!errors.isEmpty()) {
-      return res.render("client-forgot-password", {
-        error: errors.array()[0].msg,
-        success: null,
-      });
-    }
-    const { email } = req.body;
+      const errors = validationResult(req);
 
-    if (!email) {
-      return res.render("client-forgot-password", {
-        error: "Merci de renseigner votre email.",
-        success: null,
-      });
-    }
+      if (!errors.isEmpty()) {
+        return res.render("client-forgot-password", {
+          error: errors.array()[0].msg,
+          success: null,
+          devLink: null,
+        });
+      }
 
-    const emailClean = email.trim().toLowerCase();
+      const emailClean = req.body.email.trim().toLowerCase();
 
-    const [rows] = await pool.query(
-      "SELECT id, nom, email FROM clients WHERE email = ? LIMIT 1",
-      [emailClean]
-    );
-
-    if (rows.length > 0) {
-      const client = rows[0];
-      const token = crypto.randomBytes(32).toString("hex");
-
-      await pool.query(
-        `
-        UPDATE clients
-        SET reset_token = ?, reset_token_expire = DATE_ADD(NOW(), INTERVAL 1 HOUR)
-        WHERE id = ?
-        `,
-        [token, client.id]
+      const [rows] = await pool.query(
+        "SELECT id, nom, email FROM clients WHERE email = ? LIMIT 1",
+        [emailClean]
       );
 
-      const resetLink = `${req.protocol}://${req.get("host")}/client/reset-password/${token}`;
+      let devLink = null;
 
-      await sendMailSafe({
-        to: client.email,
-        subject: "Réinitialisation de votre mot de passe",
-        text:
-          `Bonjour ${client.nom},\n\n` +
-          `Vous avez demandé la réinitialisation de votre mot de passe.\n\n` +
-          `Cliquez sur ce lien pour choisir un nouveau mot de passe :\n` +
-          `${resetLink}\n\n` +
-          `Ce lien est valable pendant 1 heure.\n\n` +
-          `Si vous n'êtes pas à l'origine de cette demande, vous pouvez ignorer ce message.`,
+      if (rows.length > 0) {
+        const client = rows[0];
+        const token = crypto.randomBytes(32).toString("hex");
+
+        await pool.query(
+          `
+          UPDATE clients
+          SET reset_token = ?, reset_token_expire = DATE_ADD(NOW(), INTERVAL 1 HOUR)
+          WHERE id = ?
+          `,
+          [token, client.id]
+        );
+
+        const baseUrl =
+          process.env.PUBLIC_BASE_URL ||
+          `${req.protocol}://${req.get("host")}`;
+
+        const resetLink = `${baseUrl}/client/reset-password/${token}`;
+
+        const mailSent = await sendMailSafe({
+          to: client.email,
+          subject: "Réinitialisation de votre mot de passe",
+          text:
+            `Bonjour ${client.nom},\n\n` +
+            `Vous avez demandé la réinitialisation de votre mot de passe.\n\n` +
+            `Cliquez sur ce lien pour choisir un nouveau mot de passe :\n` +
+            `${resetLink}\n\n` +
+            `Ce lien est valable pendant 1 heure.\n\n` +
+            `Si vous n'êtes pas à l'origine de cette demande, vous pouvez ignorer ce message.`,
+        });
+
+        console.log("Lien reset mot de passe :", resetLink);
+
+        if (!mailSent && process.env.NODE_ENV !== "production") {
+          devLink = resetLink;
+        }
+      }
+
+      return res.render("client-forgot-password", {
+        error: null,
+        success:
+          "Si un compte existe avec cet email, un lien de réinitialisation vient d’être envoyé.",
+        devLink,
+      });
+    } catch (err) {
+      console.error("Erreur mot de passe oublié client :", err);
+      return res.render("client-forgot-password", {
+        error: "Impossible d’envoyer le lien de réinitialisation pour le moment.",
+        success: null,
+        devLink: null,
       });
     }
-
-    return res.render("client-forgot-password", {
-      error: null,
-      success: "Si un compte existe avec cet email, un lien de réinitialisation vient d’être envoyé.",
-    });
-  } catch (err) {
-    console.error("Erreur mot de passe oublié client :", err);
-    return res.render("client-forgot-password", {
-      error: "Erreur serveur.",
-      success: null,
-    });
   }
-});
+);
 
 router.get("/reset-password/:token", async (req, res) => {
   try {
@@ -354,7 +324,7 @@ router.get("/reset-password/:token", async (req, res) => {
   } catch (err) {
     console.error("Erreur page reset password client :", err);
     return res.render("client-reset-password", {
-      error: "Erreur serveur.",
+      error: "Impossible d’afficher la page de réinitialisation pour le moment.",
       success: null,
       token: null,
     });
@@ -373,69 +343,71 @@ router.post(
       .withMessage("Les mots de passe ne correspondent pas."),
   ],
   async (req, res) => {
-  try {
-    res.locals.publicPage = true;
-    const token = req.params.token;
-    const { mot_de_passe, mot_de_passe_confirm } = req.body;
+    try {
+      res.locals.publicPage = true;
+      const token = req.params.token;
+      const { mot_de_passe } = req.body;
 
-    const errors = validationResult(req);
+      const errors = validationResult(req);
 
-    if (!errors.isEmpty()) {
+      if (!errors.isEmpty()) {
+        return res.render("client-reset-password", {
+          error: errors.array()[0].msg,
+          success: null,
+          token,
+        });
+      }
+
+      const [rows] = await pool.query(
+        `
+        SELECT id
+        FROM clients
+        WHERE reset_token = ?
+          AND reset_token_expire IS NOT NULL
+          AND reset_token_expire >= NOW()
+        LIMIT 1
+        `,
+        [token]
+      );
+
+      if (rows.length === 0) {
+        return res.render("client-reset-password", {
+          error: "Lien invalide ou expiré.",
+          success: null,
+          token: null,
+        });
+      }
+
+      const clientId = rows[0].id;
+      const hash = await bcrypt.hash(mot_de_passe, 10);
+
+      await pool.query(
+        `
+        UPDATE clients
+        SET mot_de_passe = ?,
+            reset_token = NULL,
+            reset_token_expire = NULL
+        WHERE id = ?
+        `,
+        [hash, clientId]
+      );
+
       return res.render("client-reset-password", {
-        error: errors.array()[0].msg,
-        success: null,
-        token,
+        error: null,
+        success:
+          "Votre mot de passe a bien été réinitialisé. Vous pouvez maintenant vous connecter.",
+        token: null,
       });
-    }
-
-    const [rows] = await pool.query(
-      `
-      SELECT id
-      FROM clients
-      WHERE reset_token = ?
-        AND reset_token_expire IS NOT NULL
-        AND reset_token_expire >= NOW()
-      LIMIT 1
-      `,
-      [token]
-    );
-
-    if (rows.length === 0) {
+    } catch (err) {
+      console.error("Erreur reset password client :", err);
       return res.render("client-reset-password", {
-        error: "Lien invalide ou expiré.",
+        error: "Impossible de réinitialiser le mot de passe pour le moment.",
         success: null,
         token: null,
       });
     }
-
-    const clientId = rows[0].id;
-    const hash = await bcrypt.hash(mot_de_passe, 10);
-
-    await pool.query(
-      `
-      UPDATE clients
-      SET mot_de_passe = ?,
-          reset_token = NULL,
-          reset_token_expire = NULL
-      WHERE id = ?
-      `,
-      [hash, clientId]
-    );
-
-    return res.render("client-reset-password", {
-      error: null,
-      success: "Votre mot de passe a bien été réinitialisé. Vous pouvez maintenant vous connecter.",
-      token: null,
-    });
-  } catch (err) {
-    console.error("Erreur reset password client :", err);
-    return res.render("client-reset-password", {
-      error: "Erreur serveur.",
-      success: null,
-      token: null,
-    });
   }
-});
+);
 
 router.get("/logout", (req, res) => {
   req.session.client = null;
@@ -447,7 +419,9 @@ router.get("/compte", requireClientLogin, async (req, res) => {
     res.locals.publicPage = true;
 
     const clientId = req.session.client.id;
-    const tab = ["rdv", "anciens", "fiche"].includes(req.query.tab) ? req.query.tab : "rdv";
+    const tab = ["rdv", "anciens", "fiche"].includes(req.query.tab)
+      ? req.query.tab
+      : "rdv";
 
     const [clientRows] = await pool.query(
       "SELECT id, nom, email, telephone, created_at, updated_at FROM clients WHERE id = ? LIMIT 1",
@@ -510,7 +484,7 @@ router.get("/compte", requireClientLogin, async (req, res) => {
     });
   } catch (err) {
     console.error("Erreur espace client :", err);
-    return res.status(500).send("Erreur serveur.");
+    return res.status(500).send("Impossible d’afficher l’espace client pour le moment.");
   }
 });
 
@@ -527,7 +501,10 @@ router.post("/fiche", requireClientLogin, async (req, res) => {
     } = req.body;
 
     if (!nom || !email || !telephone) {
-      return res.redirect("/client/compte?tab=fiche&error=" + encodeURIComponent("Champs requis manquants."));
+      return res.redirect(
+        "/client/compte?tab=fiche&error=" +
+          encodeURIComponent("Champs requis manquants.")
+      );
     }
 
     const [currentRows] = await pool.query(
@@ -549,23 +526,50 @@ router.post("/fiche", requireClientLogin, async (req, res) => {
     );
 
     if (exists.length > 0) {
-      return res.redirect("/client/compte?tab=fiche&error=" + encodeURIComponent("Cet email est déjà utilisé."));
+      return res.redirect(
+        "/client/compte?tab=fiche&error=" +
+          encodeURIComponent("Cet email est déjà utilisé.")
+      );
     }
 
-    const wantsPasswordChange = !!(mot_de_passe || mot_de_passe_confirm || mot_de_passe_actuel);
+    const wantsPasswordChange = !!(
+      mot_de_passe ||
+      mot_de_passe_confirm ||
+      mot_de_passe_actuel
+    );
 
     if (wantsPasswordChange) {
       if (!mot_de_passe_actuel || !mot_de_passe || !mot_de_passe_confirm) {
-        return res.redirect("/client/compte?tab=fiche&error=" + encodeURIComponent("Pour changer le mot de passe, remplissez les 3 champs."));
+        return res.redirect(
+          "/client/compte?tab=fiche&error=" +
+            encodeURIComponent("Pour changer le mot de passe, remplissez les 3 champs.")
+        );
       }
 
       if (mot_de_passe !== mot_de_passe_confirm) {
-        return res.redirect("/client/compte?tab=fiche&error=" + encodeURIComponent("Les nouveaux mots de passe ne correspondent pas."));
+        return res.redirect(
+          "/client/compte?tab=fiche&error=" +
+            encodeURIComponent("Les nouveaux mots de passe ne correspondent pas.")
+        );
       }
 
-      const ok = await bcrypt.compare(mot_de_passe_actuel, currentClient.mot_de_passe);
+      if (mot_de_passe.length < 8) {
+        return res.redirect(
+          "/client/compte?tab=fiche&error=" +
+            encodeURIComponent("Le nouveau mot de passe doit contenir au moins 8 caractères.")
+        );
+      }
+
+      const ok = await bcrypt.compare(
+        mot_de_passe_actuel,
+        currentClient.mot_de_passe
+      );
+
       if (!ok) {
-        return res.redirect("/client/compte?tab=fiche&error=" + encodeURIComponent("Mot de passe actuel incorrect."));
+        return res.redirect(
+          "/client/compte?tab=fiche&error=" +
+            encodeURIComponent("Mot de passe actuel incorrect.")
+        );
       }
 
       const hash = await bcrypt.hash(mot_de_passe, 10);
@@ -588,10 +592,16 @@ router.post("/fiche", requireClientLogin, async (req, res) => {
       telephone: telephone.trim(),
     };
 
-    return res.redirect("/client/compte?tab=fiche&success=" + encodeURIComponent("Fiche client mise à jour."));
+    return res.redirect(
+      "/client/compte?tab=fiche&success=" +
+        encodeURIComponent("Fiche client mise à jour.")
+    );
   } catch (err) {
     console.error("Erreur update fiche client :", err);
-    return res.redirect("/client/compte?tab=fiche&error=" + encodeURIComponent("Erreur serveur."));
+    return res.redirect(
+      "/client/compte?tab=fiche&error=" +
+        encodeURIComponent("Impossible de mettre à jour la fiche client pour le moment.")
+    );
   }
 });
 
@@ -626,7 +636,9 @@ router.post("/rdv/:id/annuler", requireClientLogin, async (req, res) => {
 
     if (rows.length === 0) {
       await conn.rollback();
-      return res.redirect("/client/compte?error=" + encodeURIComponent("RDV introuvable."));
+      return res.redirect(
+        "/client/compte?error=" + encodeURIComponent("RDV introuvable.")
+      );
     }
 
     const rdv = rows[0];
@@ -634,7 +646,10 @@ router.post("/rdv/:id/annuler", requireClientLogin, async (req, res) => {
 
     if (startDate <= new Date()) {
       await conn.rollback();
-      return res.redirect("/client/compte?error=" + encodeURIComponent("Impossible d'annuler un rendez-vous passé."));
+      return res.redirect(
+        "/client/compte?error=" +
+          encodeURIComponent("Impossible d'annuler un rendez-vous passé.")
+      );
     }
 
     const endDateCurrent = parseMysqlDateTimeToDate(rdv.c_end);
@@ -644,7 +659,10 @@ router.post("/rdv/:id/annuler", requireClientLogin, async (req, res) => {
     if (dmin && !isNaN(dmin) && dmin > 0) {
       durMs = dmin * 60 * 1000;
     } else {
-      durMs = Math.max(5 * 60 * 1000, endDateCurrent.getTime() - startDate.getTime());
+      durMs = Math.max(
+        5 * 60 * 1000,
+        endDateCurrent.getTime() - startDate.getTime()
+      );
     }
 
     const restoredEnd = new Date(startDate.getTime() + durMs);
@@ -655,10 +673,10 @@ router.post("/rdv/:id/annuler", requireClientLogin, async (req, res) => {
       [restoredEndSql, rdv.creneau_id, rdv.user_id]
     );
 
-    await conn.query(
-      "DELETE FROM rdv WHERE id = ? AND client_id = ?",
-      [rdvId, clientId]
-    );
+    await conn.query("DELETE FROM rdv WHERE id = ? AND client_id = ?", [
+      rdvId,
+      clientId,
+    ]);
 
     await conn.commit();
 
@@ -677,7 +695,10 @@ router.post("/rdv/:id/annuler", requireClientLogin, async (req, res) => {
       });
     }
 
-    return res.redirect("/client/compte?success=" + encodeURIComponent("Votre rendez-vous a bien été annulé."));
+    return res.redirect(
+      "/client/compte?success=" +
+        encodeURIComponent("Votre rendez-vous a bien été annulé.")
+    );
   } catch (err) {
     if (conn) {
       try {
@@ -685,7 +706,10 @@ router.post("/rdv/:id/annuler", requireClientLogin, async (req, res) => {
       } catch (e) {}
     }
     console.error("Erreur annulation client :", err);
-    return res.redirect("/client/compte?error=" + encodeURIComponent("Erreur serveur."));
+    return res.redirect(
+      "/client/compte?error=" +
+        encodeURIComponent("Impossible d’annuler le rendez-vous pour le moment.")
+    );
   } finally {
     if (conn) conn.release();
   }

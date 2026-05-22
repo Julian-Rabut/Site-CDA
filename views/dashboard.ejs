@@ -142,33 +142,6 @@
     <p class="text-muted">Vous devez d'abord créer des créneaux.</p>
   <% } %>
 </div>
-
-          <div class="dashboard-grid"></div>
-          <div class="card">
-            <h2>Clients par mois</h2>
-            <canvas id="chartClientsParMois" height="120"></canvas>
-          </div>
-
-          <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
-          <script>
-  (async function(){
-    const canvas = document.getElementById("chartClientsParMois");
-    if(!canvas) return;
-
-    const res = await fetch("/auth/api/stats/clients-par-mois");
-    const data = await res.json();
-    if(!data.success) return;
-
-    new Chart(canvas.getContext("2d"), {
-      type: "bar",
-      data: {
-        labels: data.labels,
-        datasets: [{ label: "Clients", data: data.values }]
-      },
-      options: { responsive: true }
-    });
-  })();
-</script>
         </div>
 
         <div>
@@ -220,6 +193,34 @@
       <p class="text-muted">Aucun client pour l’instant.</p>
     <% } %>
   </div>
+
+          <div class="dashboard-grid"></div>
+            <div class="card">
+              <h2>Clients par mois</h2>
+              <canvas id="chartClientsParMois" height="120"></canvas>
+          </div>
+
+                    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+          <script>
+            (async function(){
+            const canvas = document.getElementById("chartClientsParMois");
+            if(!canvas) return;
+
+            const res = await fetch("/auth/api/stats/clients-par-mois");
+            const data = await res.json();
+            if(!data.success) return;
+
+            new Chart(canvas.getContext("2d"), {
+              type: "bar",
+              data: {
+                labels: data.labels,
+                datasets: [{ label: "Clients", data: data.values }]
+              },
+              options: { responsive: true }
+            });
+          })();
+        </script>
+
 
 
   </div>
